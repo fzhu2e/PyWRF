@@ -26,8 +26,8 @@
 # ./pywrf.py gsi -t gsi
 #========================================================================================
 
-import os, sys, time
-import subprocess
+#import os, sys, time
+#import subprocess
 import argparse
 
 import settings
@@ -65,14 +65,14 @@ def main():
             help="running task")
 
     # below are just for make_namelist task
-    parser_wps.add_argument('-s', '--start',
-            help="start time")
+    #parser_wps.add_argument('-s', '--start',
+            #help="start time")
 
-    parser_wps.add_argument('-e', '--end',
-            help="end time")
+    #parser_wps.add_argument('-e', '--end',
+            #help="end time")
 
-    parser_wps.add_argument('-r', '--run',
-            help="running hours")
+    #parser_wps.add_argument('-r', '--run',
+            #help="running hours")
 
     #============================================
     # WRF
@@ -83,14 +83,14 @@ def main():
             help="running task")
 
     # below are just for make_namelist task
-    parser_wrf.add_argument('-s', '--start',
-            help="start time")
+    #parser_wrf.add_argument('-s', '--start',
+            #help="start time")
 
-    parser_wrf.add_argument('-e', '--end',
-            help="end time")
+    #parser_wrf.add_argument('-e', '--end',
+            #help="end time")
 
-    parser_wrf.add_argument('-r', '--run',
-            help="running hours")
+    #parser_wrf.add_argument('-r', '--run',
+            #help="running hours")
 
     #============================================
     # WRFDA
@@ -109,38 +109,48 @@ def main():
             help="running task")
 
     # below are just for make_script task
-    parser_gsi.add_argument('-a', '--ana',
-            help="end time")
+    #parser_gsi.add_argument('-a', '--ana',
+            #help="end time")
 
-    parser_gsi.add_argument('-w', '--window',
-            help="running hours")
+    #parser_gsi.add_argument('-w', '--window',
+            #help="running hours")
 
     # parse the input command line
     args = parser.parse_args()
 
+    # initial
     print("==================================")
     print("Start running PyWRF...")
     print("----------------------------------")
+    print("RUN_NAME:", settings.RUN_NAME)
+    print("----------------------------------")
+    print("PATH:")
     print("WPS_ROOT:", settings.WPS_ROOT)
     print("WRF_ROOT:", settings.WRF_ROOT)
     print("WRFDA_ROOT:", settings.WRFDA_ROOT)
     print("GSI_ROOT:", settings.GSI_ROOT)
     print("----------------------------------")
+    print("TIME:")
+    print("Start time:", settings.START_TIME)
+    print("End time:", settings.END_TIME)
+    print("Running hours:", settings.RUNNING_HOURS)
+    print("----------------------------------")
+    print("Arguments:", args)
     print("Running mode:", args.mode)
     print("Running task:", args.task)
     print("==================================")
 
     if args.mode == 'wps':
-        wps.run(args.task)
+        wps.run(args)
 
     elif args.mode == 'wrf':
-        wrf.run(args.task)
+        wrf.run(args)
 
     elif args.mode == 'wrfda':
-        wrfda.run(args.task)
+        wrfda.run(args)
 
     elif args.mode == 'gsi':
-        gsi.run(args.task)
+        gsi.run(args)
 
 if __name__ == "__main__":
     main()

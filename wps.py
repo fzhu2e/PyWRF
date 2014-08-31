@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
 
-def run(task):
+def run(args):
     print("Running WPS...")
-    print("Task:", task)
+    print("Task:", args.task)
