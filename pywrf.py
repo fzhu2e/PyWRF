@@ -69,7 +69,12 @@ def main():
     parser_wps.add_argument('-s', '--start',
             help="start time")
 
-    parser_wps.add_argument('-r', '--run',
+    wps_run_length = parser_wps.add_mutually_exclusive_group()
+
+    wps_run_length.add_argument('-e', '--end',
+            help="end time")
+
+    wps_run_length.add_argument('-r', '--run',
             help="running hours")
 
     #============================================
@@ -84,7 +89,12 @@ def main():
     parser_wrf.add_argument('-s', '--start',
             help="start time")
 
-    parser_wrf.add_argument('-r', '--run',
+    wrf_run_length = parser_wrf.add_mutually_exclusive_group()
+
+    wrf_run_length.add_argument('-e', '--end',
+            help="end time")
+
+    wrf_run_length.add_argument('-r', '--run',
             help="running hours")
 
     #============================================
@@ -112,6 +122,7 @@ def main():
 
     # parse the input command line
     args = parser.parse_args()
+    #============================================
 
     # initial
     settings.init(args)
