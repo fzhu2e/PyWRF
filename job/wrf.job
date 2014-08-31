@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Set job name
+#$ -N wrf_arw
+
+# Merge stdout stderr
+#$ -j y
+
+# Set the number of processors
+#$ -pe mpi2_mpd 192
+
+# Set output directory
+#$ -o $HOME/output
+
+# Source /etc/csh.cshrc for basic environment and modules
+source /etc/bashrc
+# Set up input, output and executable variables
+# These often differ per job
+INPUT=/data/$USER/Tools/WRF-3.2.1/WRFV3/run_pwang_case
+RESULTS=$INPUT/$JOB_NAME.$JOB_ID
+EXECUTABLE=$INPUT/wrf.exe
+
+# Set up for MPI
+export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
+
+# Load modules
+module load bundle/basic-1
+module load jobvars
+
+WORK_DIR=/scratch4/fzhu/wrf
+# Do our work in our scheduler-assigned temporary directory
+cd $WORK_DIR
+# Copy your input to your $TMPDIR
+rsync -aL $INPUT/* $WORK_DIR
+#mpiexec
+mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
+# Copy your results to a directory in /data/$USER
+rsync -a wrfout* $RESULTS
+rsync -a wrfvar* $RESULTS
+rsync -a rsl* $RESULTS
+
+exit 0

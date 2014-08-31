@@ -26,20 +26,11 @@
 # ./pywrf.py gsi -t gsi
 #========================================================================================
 
-#import os, sys, time
-#import subprocess
 import argparse
 
 import settings
 import env_vars
 import wps, wrf, wrfda, gsi
-
-#cmd1 = "ls"
-#cmd2 = "ls -l"
-#cmds = [cmd1, cmd2]
-
-#for cmd in cmds:
-    #subprocess.call(cmd, shell=True)
 
 def main():
     parser = argparse.ArgumentParser(description='Run WRF in Python')
@@ -62,63 +53,75 @@ def main():
     #============================================
     parser_wps.add_argument('-t', '--task',
             required=True,
-            choices=['make_namelist', 'geogrid', 'ungrib', 'metgrid'],
-            help="running task")
+            choices=['make_new_run', 'make_namelist', 'geogrid', 'ungrib', 'metgrid'],
+            help='running task')
+
+    parser_wps.add_argument('-o', '--workdir',
+            help='work directory')
 
     # below are just for make_namelist task
     parser_wps.add_argument('-s', '--start',
-            help="start time")
+            help='start time')
 
     wps_run_length = parser_wps.add_mutually_exclusive_group()
 
     wps_run_length.add_argument('-e', '--end',
-            help="end time")
+            help='end time')
 
     wps_run_length.add_argument('-r', '--run',
-            help="running hours")
+            help='running hours')
 
     #============================================
     # WRF
     #============================================
     parser_wrf.add_argument('-t', '--task',
             required=True,
-            choices=['make_namelist', 'real', 'wrf'],
-            help="running task")
+            choices=['make_new_run', 'make_namelist', 'real', 'wrf'],
+            help='running task')
+
+    parser_wrf.add_argument('-o', '--workdir',
+            help='work directory')
 
     # below are just for make_namelist task
     parser_wrf.add_argument('-s', '--start',
-            help="start time")
+            help='start time')
 
     wrf_run_length = parser_wrf.add_mutually_exclusive_group()
 
     wrf_run_length.add_argument('-e', '--end',
-            help="end time")
+            help='end time')
 
     wrf_run_length.add_argument('-r', '--run',
-            help="running hours")
+            help='running hours')
 
     #============================================
     # WRFDA
     #============================================
     parser_wrfda.add_argument('-t', '--task',
             required=True,
-            choices=['make_parame', 'da_update_bc'],
-            help="running task")
+            choices=['make_new_run', 'make_parame', 'da_update_bc'],
+            help='running task')
+
+    parser_wrfda.add_argument('-o', '--workdir',
+            help='work directory')
 
     #============================================
     # GSI
     #============================================
     parser_gsi.add_argument('-t', '--task',
             required=True,
-            choices=['make_script', 'gsi'],
-            help="running task")
+            choices=['make_new_run', 'make_script', 'gsi'],
+            help='running task')
+
+    parser_gsi.add_argument('-o', '--workdir',
+            help='work directory')
 
     # below are just for make_script task
     parser_gsi.add_argument('-a', '--ana',
-            help="end time")
+            help='analysis time')
 
     parser_gsi.add_argument('-w', '--window',
-            help="running hours")
+            help='assimilation window')
 
     # parse the input command line
     args = parser.parse_args()
@@ -139,5 +142,5 @@ def main():
     elif args.mode == 'gsi':
         gsi.run(args)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

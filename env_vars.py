@@ -17,3 +17,9 @@ END_TIME = ""
 PROJECT_NAME = ""
 CASE_NAME = ""
 RUN_NAME = ""
+
+# model
+MPI_WPS = False
+MPI_WRF = False
+MPI_WRFDA = False
+MPI_GSI = False
