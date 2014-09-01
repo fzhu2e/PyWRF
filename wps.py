@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import subprocess
+import re
 
 import env_vars
 
@@ -60,12 +61,21 @@ def make_namelist(args):
     start_time = str(env_vars.START_TIME).replace(' ', '_')
     end_time = str(env_vars.END_TIME).replace(' ', '_')
 
+    max_dom = str(env_vars.MAX_DOM)
+    e_we = re.sub(r'\[|\]', '', str(env_vars.E_WE))
+    e_sn = re.sub(r'\[|\]', '', str(env_vars.E_SN))
+    e_vert = re.sub(r'\[|\]', '', str(env_vars.E_VERT))
+    i_parent_start = re.sub(r'\[|\]', '', str(env_vars.I_PARENT_START))
+    j_parent_start = re.sub(r'\[|\]', '', str(env_vars.J_PARENT_START))
+    dx = str(env_vars.DX[0])
+    dy = str(env_vars.DY[0])
+
     namelist = open('namelist.wps', 'w')
     #=================== configuration-s ===================
     namelist.write("""
     &share
      wrf_core = 'ARW',
-     max_dom = 1,
+     max_dom = """ + max_dom + """,
      start_date = '""" + start_time + """','""" + start_time + """',
      end_date   = '""" + end_time + """',''""" + end_time + """',
      interval_seconds = 21600,
@@ -74,15 +84,15 @@ def make_namelist(args):
     /
 
     &geogrid
-     parent_id         =   1,   1,
-     parent_grid_ratio =   1,   3,
-     i_parent_start    =   1,  31,
-     j_parent_start    =   1,  17,
-     e_we              =  400, 112,
-     e_sn              =  350,  97,
+     parent_id         =   1,   1,   1,
+     parent_grid_ratio =   1,   3,   3,
+     i_parent_start    =  """ + i_p_s + """,
+     j_parent_start    =  """ + j_p_s + """,
+     e_we              =  """ + e_we + """,
+     e_sn              =  """ + e_sn + """
      geog_data_res     = '10m','30s',
-     dx = 12000,
-     dy = 12000,
+     dx = """ + dx + """,
+     dy = """ + dy + """,
      map_proj = 'lambert',
      ref_lat   = 27,
      ref_lon   = -70,

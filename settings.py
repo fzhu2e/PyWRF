@@ -23,6 +23,16 @@ def init(args):
     env_vars.MPI_WRF = True
     env_vars.MPI_WRFDA = False
     env_vars.MPI_GSI = True
+
+    env_vars.TIME_STEP = 60
+    env_vars.MAX_DOM = 1
+    env_vars.E_WE = [400, 0, 0]
+    env_vars.E_SN = [350, 0, 0]
+    env_vars.E_VERT = [35, 0, 0]
+    env_vars.DX = [16000, 0, 0]
+    env_vars.DY = [16000, 0, 0]
+    env_vars.I_PARENT_START = [1, 0, 0]
+    env_vars.J_PARENT_START = [1, 0, 0]
     #=================== configuration-e ===================
 
     # time

@@ -76,7 +76,8 @@ def main():
     #============================================
     parser_wrf.add_argument('-t', '--task',
             required=True,
-            choices=['make_new_run', 'make_namelist', 'real', 'wrf'],
+            choices=['make_new_run', 'make_namelist',
+                'make_jobs', 'real', 'wrf'],
             help='running task')
 
     parser_wrf.add_argument('-o', '--workdir',
