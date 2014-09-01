@@ -23,7 +23,7 @@ def run(args):
         make_new_run()
 
     elif args.task == 'make_namelist':
-        make_namelist(args)
+        make_namelist()
 
     elif args.task == 'geogrid':
         run_geogrid()
@@ -57,7 +57,7 @@ def make_new_run():
     for tmp_cmd in tmp_cmds:
         subprocess.call(tmp_cmd, shell=True)
 
-def make_namelist(args):
+def make_namelist():
     start_time = str(env_vars.START_TIME).replace(' ', '_')
     end_time = str(env_vars.END_TIME).replace(' ', '_')
 

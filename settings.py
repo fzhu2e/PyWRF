@@ -8,9 +8,20 @@ def init(args):
     env_vars.PYWRF_ROOT = os.getcwd()
 
     #=================== configuration-s ===================
+    # Project
+    env_vars.PROJECT_NAME = 'OSSE'
+
     # data path
     env_vars.GEOG_DATA_PATH = '/data/fzhu/Data/ForWPS/geog_data_pwang/geog'
     env_vars.FNL_DATA_PATH = '/data/fzhu/Data/ForSDAT/ncep'
+    env_vars.CRTM_PATH = '/data/fzhu/Data/ForGSI/CRTM_Coefficients'
+
+    env_vars.RESULTS = os.path.join('/data/fzhu/Results', env_vars.PROJECT_NAME)
+    env_vars.RESULTS_WPS = os.path.join(env_vars.RESULTS, 'wps')
+    env_vars.RESULTS_REAL = os.path.join(env_vars.RESULTS, 'real')
+    env_vars.RESULTS_WRF = os.path.join(env_vars.RESULTS, 'wrf')
+    env_vars.RESULTS_DA_UPDATE_BC = os.path.join(env_vars.RESULTS, 'da_update_bc')
+    env_vars.RESULTS_GSI = os.path.join(env_vars.RESULTS, 'gsi')
 
     # model root
     env_vars.WPS_ROOT = '/data/fzhu/Tools/WRF-3.2.1/WPS'
@@ -36,31 +47,49 @@ def init(args):
     #=================== configuration-e ===================
 
     # time
-    if args.start is not None:
-        yyyy = args.start[0:4]
-        mm = args.start[4:6]
-        dd = args.start[6:8]
-        hh = args.start[8:10]
-        env_vars.START_TIME = datetime.datetime(int(yyyy), int(mm), int(dd), int(hh))
+    if hasattr(args, 'start'):
+        if args.start is not None:
+            yyyy = args.start[0:4]
+            mm = args.start[4:6]
+            dd = args.start[6:8]
+            hh = args.start[8:10]
+            env_vars.START_TIME = datetime.datetime(int(yyyy), int(mm), int(dd), int(hh))
 
-    if args.end is not None:
-        yyyy = args.end[0:4]
-        mm = args.end[4:6]
-        dd = args.end[6:8]
-        hh = args.end[8:10]
-        env_vars.END_TIME = datetime.datetime(int(yyyy), int(mm), int(dd), int(hh))
-        env_vars.RUNNING_HOURS = env_vars.END_TIME - env_vars.START_TIME
+    if hasattr(args, 'end'):
+        if args.end is not None:
+            yyyy = args.end[0:4]
+            mm = args.end[4:6]
+            dd = args.end[6:8]
+            hh = args.end[8:10]
+            env_vars.END_TIME = datetime.datetime(int(yyyy), int(mm), int(dd), int(hh))
+            env_vars.RUNNING_HOURS = env_vars.END_TIME - env_vars.START_TIME
 
-    if args.run is not None:
-        rh = args.run
-        env_vars.RUNNING_HOURS = datetime.timedelta(hours=int(rh))
-        env_vars.END_TIME = env_vars.START_TIME + env_vars.RUNNING_HOURS
+    if hasattr(args, 'run'):
+        if args.run is not None:
+            rh = args.run
+            env_vars.RUNNING_HOURS = datetime.timedelta(hours=int(rh))
+            env_vars.END_TIME = env_vars.START_TIME + env_vars.RUNNING_HOURS
+
+    if hasattr(args, 'ana'):
+        if args.ana is not None:
+            print('--sdfadsfa--------')
+            yyyy = args.ana[0:4]
+            mm = args.ana[4:6]
+            dd = args.ana[6:8]
+            hh = args.ana[8:10]
+            env_vars.ANA_TIME = datetime.datetime(int(yyyy), int(mm), int(dd), int(hh))
+
+    if hasattr(args, 'window'):
+        if args.window is not None:
+            ww = args.window
+            env_vars.WINDOW = datetime.timedelta(hours=int(ww))
+        else:
+            env_vars.WINDOW = datetime.timedelta(hours=1.5)
 
     # run_name
     if args.workdir is not None:
         env_vars.RUN_NAME = args.workdir
     else:
-        env_vars.PROJECT_NAME = 'OSSE'
         env_vars.CASE_NAME = str(env_vars.START_TIME.year) + str(env_vars.START_TIME.month) + str(env_vars.START_TIME.day) + str(env_vars.START_TIME.hour)
         env_vars.RUN_NAME = env_vars.PROJECT_NAME + '.' + env_vars.CASE_NAME
 
@@ -82,9 +111,9 @@ def init(args):
     print('WRF_ROOT:', env_vars.WRF_ROOT)
     print('WRFDA_ROOT:', env_vars.WRFDA_ROOT)
     print('GSI_ROOT:', env_vars.GSI_ROOT)
-    print('----------------------------------')
-    print('TIME:')
-    print('Start time:', env_vars.START_TIME)
-    print('End time:', env_vars.END_TIME)
-    print('Running hours:', env_vars.RUNNING_HOURS)
+    #print('----------------------------------')
+    #print('TIME:')
+    #print('Start time:', env_vars.START_TIME)
+    #print('End time:', env_vars.END_TIME)
+    #print('Running hours:', env_vars.RUNNING_HOURS)
     print('==================================')

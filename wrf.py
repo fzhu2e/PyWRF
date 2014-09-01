@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import subprocess
-import datetime
 import re
 
 import env_vars
@@ -24,11 +23,11 @@ def run(args):
         make_new_run()
 
     elif args.task == 'make_namelist':
-        make_namelist(args)
+        make_namelist()
 
     elif args.task == 'make_jobs':
-        make_real_job(args)
-        make_wrf_job(args)
+        make_real_job()
+        make_wrf_job()
 
     elif args.task == 'real':
         run_real()
@@ -38,8 +37,10 @@ def run(args):
 
 def make_new_run():
     subprocess.call('cp -r ../run/* .', shell=True)
+    subprocess.call('ln -sf ' + env_vars.WRF_ROOT+ '/main/*.exe .', shell=True)
+    subprocess.call('rm -f namelist.input', shell=True)
 
-def make_namelist(args):
+def make_namelist():
     yyyy_s = str(env_vars.START_TIME.year)
     mm_s = str(env_vars.START_TIME.month)
     dd_s = str(env_vars.START_TIME.day)
@@ -186,7 +187,10 @@ def make_namelist(args):
     """)
     #=================== configuration-e ===================
 
-def make_real_job(args):
+def make_real_job():
+
+    datehour = ''
+
     job = open('real.job', 'w')
     #=================== configuration-s ===================
     job.write("""#!/usr/bin/env bash
@@ -208,8 +212,7 @@ source /etc/bashrc
 # Set up input, output and executable variables
 # These often differ per job
 INPUT=""" + env_vars.WORK_ROOT + """
-RESULTS=$INPUT/$JOB_NAME.$JOB_ID
-EXECUTABLE=$INPUT/real.exe
+EXECUTABLE=./real.exe
 
 # Set up for MPI
 export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
@@ -218,22 +221,24 @@ export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
 module load bundle/basic-1
 module load jobvars
 
-WORK_DIR=/scratch4/fzhu/real
+WORK_DIR=/scratch4/fzhu/real/
 # Do our work in our scheduler-assigned temporary directory
 cd $WORK_DIR
 # Copy your input to your $TMPDIR
-rsync -aL $INPUT/* $WORK_DIR
+rsync -a $INPUT/* $WORK_DIR
 #mpiexec
 mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
 # Copy your results to a directory in /data/$USER
-rsync -a ./rsl* $RESULTS
-rsync -a ./wrfinput* $RESULTS
-rsync -a ./wrfbdy* $RESULTS
+rsync -a ./wrfinput* """ + os.path.join(env_vars.RESULTS_REAL, datehour) + """
+rsync -a ./wrfbdy* """ + os.path.join(env_vars.RESULTS_REAL, datehour) + """
 
 exit 0""")
     #=================== configuration-e ===================
 
-def make_wrf_job(args):
+def make_wrf_job():
+
+    datehour = ''
+
     job = open('wrf.job', 'w')
     #=================== configuration-s ===================
     job.write("""#!/usr/bin/env bash
@@ -255,8 +260,7 @@ source /etc/bashrc
 # Set up input, output and executable variables
 # These often differ per job
 INPUT=""" + env_vars.WORK_ROOT + """
-RESULTS=$INPUT/$JOB_NAME.$JOB_ID
-EXECUTABLE=$INPUT/wrf.exe
+EXECUTABLE=./wrf.exe
 
 # Set up for MPI
 export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
@@ -269,13 +273,12 @@ WORK_DIR=/scratch4/fzhu/wrf
 # Do our work in our scheduler-assigned temporary directory
 cd $WORK_DIR
 # Copy your input to your $TMPDIR
-rsync -aL $INPUT/* $WORK_DIR
+rsync -a $INPUT/* $WORK_DIR
 #mpiexec
 mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
 # Copy your results to a directory in /data/$USER
-rsync -a ./rsl* $RESULTS
-rsync -a ./wrfout* $RESULTS
-rsync -a ./wrfvar* $RESULTS
+rsync -a ./wrfout* """ + os.path.join(env_vars.RESULTS_WRF, datehour) + """
+rsync -a ./wrfvar* """ + os.path.join(env_vars.RESULTS_WRF, datehour) + """
 
 exit 0""")
     #=================== configuration-e ===================
@@ -291,12 +294,16 @@ def run_real():
     else:
         subprocess.call('qsub -sync y real.job', shell=True)
 
-def run_wrf():
+    datehour = ''
+    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_WPS, datehour) + '/wrf* .', shell=True)
 
-    subprocess.call('ln -sf ./real_arw.*/wrf* .', shell=True)
+def run_wrf():
 
     if env_vars.MPI_WRF == False:
         subprocess.call('./wrf.exe', shell=True)
 
     else:
         subprocess.call('qsub -sync y wrf.job', shell=True)
+
+    datehour = ''
+    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_WRF, datehour) + '/wrf* .', shell=True)
