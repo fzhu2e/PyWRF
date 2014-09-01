@@ -10,18 +10,33 @@ def init(args):
     #=================== configuration-s ===================
     # Project
     env_vars.PROJECT_NAME = 'OSSE'
+    env_vars.RESULTS_ROOT = '/data/fzhu/Results'
+
+    env_vars.RESULTS = os.path.join(env_vars.RESULTS_ROOT, env_vars.PROJECT_NAME)
+    env_vars.RESULTS_WPS = os.path.join(env_vars.RESULTS, 'wps')
+    env_vars.RESULTS_REAL = os.path.join(env_vars.RESULTS, 'real')
+    env_vars.RESULTS_WRF = os.path.join(env_vars.RESULTS, 'wrf')
+    env_vars.RESULTS_DA_UPDATE_BC = os.path.join(env_vars.RESULTS, 'da_update_bc')
+    env_vars.RESULTS_GSI = os.path.join(env_vars.RESULTS, 'gsi')
+
+    tmp_dirs = [
+            env_vars.RESULTS_ROOT,
+            env_vars.RESULTS,
+            env_vars.RESULTS_WPS,
+            env_vars.RESULTS_REAL,
+            env_vars.RESULTS_WRF,
+            env_vars.RESULTS_DA_UPDATE_BC,
+            env_vars.RESULTS_GSI,
+            ]
+    for tmp_dir in tmp_dirs:
+        if not os.path.exists(tmp_dir):
+            os.mkdir(tmp_dir)
 
     # data path
     env_vars.GEOG_DATA_PATH = '/data/fzhu/Data/ForWPS/geog_data_pwang/geog'
     env_vars.FNL_DATA_PATH = '/data/fzhu/Data/ForSDAT/ncep'
     env_vars.CRTM_PATH = '/data/fzhu/Data/ForGSI/CRTM_Coefficients'
 
-    env_vars.RESULTS = os.path.join('/data/fzhu/Results', env_vars.PROJECT_NAME)
-    env_vars.RESULTS_WPS = os.path.join(env_vars.RESULTS, 'wps')
-    env_vars.RESULTS_REAL = os.path.join(env_vars.RESULTS, 'real')
-    env_vars.RESULTS_WRF = os.path.join(env_vars.RESULTS, 'wrf')
-    env_vars.RESULTS_DA_UPDATE_BC = os.path.join(env_vars.RESULTS, 'da_update_bc')
-    env_vars.RESULTS_GSI = os.path.join(env_vars.RESULTS, 'gsi')
 
     # model root
     env_vars.WPS_ROOT = '/data/fzhu/Tools/WRF-3.2.1/WPS'
@@ -72,7 +87,6 @@ def init(args):
 
     if hasattr(args, 'ana'):
         if args.ana is not None:
-            print('--sdfadsfa--------')
             yyyy = args.ana[0:4]
             mm = args.ana[4:6]
             dd = args.ana[6:8]

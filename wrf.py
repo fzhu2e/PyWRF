@@ -4,6 +4,7 @@ import subprocess
 import re
 
 import env_vars
+import tools
 
 def run(args):
     print('Start running WRF...')
@@ -186,10 +187,21 @@ def make_namelist():
     /
     """)
     #=================== configuration-e ===================
+    namelist.close()
 
 def make_real_job():
 
-    datehour = ''
+    yyyy = tools.pick_value('namelist.input', 'start_year')
+    mm = tools.pick_value('namelist.input', 'start_month')
+    dd = tools.pick_value('namelist.input', 'start_day')
+    hh = tools.pick_value('namelist.input', 'start_hour')
+
+    datehour = yyyy + mm + dd + hh
+
+    result_dir = os.path.join(env_vars.RESULTS_REAL, datehour)
+
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
 
     job = open('real.job', 'w')
     #=================== configuration-s ===================
@@ -212,6 +224,7 @@ source /etc/bashrc
 # Set up input, output and executable variables
 # These often differ per job
 INPUT=""" + env_vars.WORK_ROOT + """
+RESULTS=""" + result_dir + """
 EXECUTABLE=./real.exe
 
 # Set up for MPI
@@ -229,15 +242,28 @@ rsync -a $INPUT/* $WORK_DIR
 #mpiexec
 mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
 # Copy your results to a directory in /data/$USER
-rsync -a ./wrfinput* """ + os.path.join(env_vars.RESULTS_REAL, datehour) + """
-rsync -a ./wrfbdy* """ + os.path.join(env_vars.RESULTS_REAL, datehour) + """
+rsync -a ./wrfinput* $RESULTS
+rsync -a ./wrfbdy* $RESULTS
+
+rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
+    job.close()
 
 def make_wrf_job():
 
-    datehour = ''
+    yyyy = tools.pick_value('namelist.input', 'start_year')
+    mm = tools.pick_value('namelist.input', 'start_month')
+    dd = tools.pick_value('namelist.input', 'start_day')
+    hh = tools.pick_value('namelist.input', 'start_hour')
+
+    datehour = yyyy + mm + dd + hh
+
+    result_dir = os.path.join(env_vars.RESULTS_WRF, datehour)
+
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
 
     job = open('wrf.job', 'w')
     #=================== configuration-s ===================
@@ -260,6 +286,7 @@ source /etc/bashrc
 # Set up input, output and executable variables
 # These often differ per job
 INPUT=""" + env_vars.WORK_ROOT + """
+RESULTS=""" + result_dir + """
 EXECUTABLE=./wrf.exe
 
 # Set up for MPI
@@ -277,11 +304,14 @@ rsync -a $INPUT/* $WORK_DIR
 #mpiexec
 mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
 # Copy your results to a directory in /data/$USER
-rsync -a ./wrfout* """ + os.path.join(env_vars.RESULTS_WRF, datehour) + """
-rsync -a ./wrfvar* """ + os.path.join(env_vars.RESULTS_WRF, datehour) + """
+rsync -a ./wrfout* $RESULTS
+rsync -a ./wrfvar* $RESULTS
+
+rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
+    job.close()
 
 def run_real():
 
@@ -294,8 +324,14 @@ def run_real():
     else:
         subprocess.call('qsub -sync y real.job', shell=True)
 
-    datehour = ''
-    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_WPS, datehour) + '/wrf* .', shell=True)
+    yyyy = tools.pick_value('namelist.input', 'start_year')
+    mm = tools.pick_value('namelist.input', 'start_month')
+    dd = tools.pick_value('namelist.input', 'start_day')
+    hh = tools.pick_value('namelist.input', 'start_hour')
+
+    datehour = yyyy + mm + dd + hh
+
+    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrf*') + ' .', shell=True)
 
 def run_wrf():
 
@@ -305,5 +341,11 @@ def run_wrf():
     else:
         subprocess.call('qsub -sync y wrf.job', shell=True)
 
-    datehour = ''
-    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_WRF, datehour) + '/wrf* .', shell=True)
+    yyyy = tools.pick_value('namelist.input', 'start_year')
+    mm = tools.pick_value('namelist.input', 'start_month')
+    dd = tools.pick_value('namelist.input', 'start_day')
+    hh = tools.pick_value('namelist.input', 'start_hour')
+
+    datehour = yyyy + mm + dd + hh
+
+    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_WRF, datehour, 'wrf*') + ' .', shell=True)

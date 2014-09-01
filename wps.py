@@ -113,6 +113,7 @@ def make_namelist():
     /
     """)
     #=================== configuration-e ===================
+    namelist.close()
 
 def run_geogrid():
     if env_vars.MPI_WPS == False:

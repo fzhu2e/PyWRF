@@ -659,6 +659,7 @@ rsync -a $WORK_ROOT $GSI_ROOT/run
 
 exit 0""")
     #=================== configuration-e ===================
+    run_script.close()
 
 def run_gsi():
 

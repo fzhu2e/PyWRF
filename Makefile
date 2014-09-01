@@ -9,10 +9,10 @@ wps:
 	./pywrf.py wps -t metgrid -o run_OSSE
 
 wrf:
-	./pywrf.py wrf -t make_new_run -o run_OSSE
-	./pywrf.py wrf -t make_namelist -s 2012102518 -r 6 -o run_OSSE
-	./pywrf.py wrf -t make_jobs -o run_OSSE
-	./pywrf.py wrf -t real -o run_OSSE
+	#./pywrf.py wrf -t make_new_run -o run_OSSE
+	#./pywrf.py wrf -t make_namelist -s 2012102518 -r 6 -o run_OSSE
+	#./pywrf.py wrf -t make_jobs -o run_OSSE
+	#./pywrf.py wrf -t real -o run_OSSE
 	./pywrf.py wrf -t wrf -o run_OSSE
 
 wrfda:
