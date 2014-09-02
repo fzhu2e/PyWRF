@@ -42,15 +42,15 @@ def make_new_run():
     subprocess.call('rm -f namelist.input', shell=True)
 
 def make_namelist():
-    yyyy_s = str(env_vars.START_TIME.year)
-    mm_s = str(env_vars.START_TIME.month)
-    dd_s = str(env_vars.START_TIME.day)
-    hh_s = str(env_vars.START_TIME.hour)
+    yyyy_s = str(env_vars.START_TIME.year).zfill(4)
+    mm_s = str(env_vars.START_TIME.month).zfill(2)
+    dd_s = str(env_vars.START_TIME.day).zfill(2)
+    hh_s = str(env_vars.START_TIME.hour).zfill(2)
 
-    yyyy_e = str(env_vars.END_TIME.year)
-    mm_e = str(env_vars.END_TIME.month)
-    dd_e = str(env_vars.END_TIME.day)
-    hh_e = str(env_vars.END_TIME.hour)
+    yyyy_e = str(env_vars.END_TIME.year).zfill(4)
+    mm_e = str(env_vars.END_TIME.month).zfill(2)
+    dd_e = str(env_vars.END_TIME.day).zfill(2)
+    hh_e = str(env_vars.END_TIME.hour).zfill(2)
 
     run_days = str(env_vars.RUNNING_HOURS.days)
     run_hours = str(env_vars.RUNNING_HOURS.seconds//3600)
@@ -191,10 +191,10 @@ def make_namelist():
 
 def make_real_job():
 
-    yyyy = tools.pick_value('namelist.input', 'start_year')
-    mm = tools.pick_value('namelist.input', 'start_month')
-    dd = tools.pick_value('namelist.input', 'start_day')
-    hh = tools.pick_value('namelist.input', 'start_hour')
+    yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
+    mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
+    dd = tools.pick_value('namelist.input', 'start_day').zfill(2)
+    hh = tools.pick_value('namelist.input', 'start_hour').zfill(2)
 
     datehour = yyyy + mm + dd + hh
 
@@ -253,10 +253,10 @@ exit 0""")
 
 def make_wrf_job():
 
-    yyyy = tools.pick_value('namelist.input', 'start_year')
-    mm = tools.pick_value('namelist.input', 'start_month')
-    dd = tools.pick_value('namelist.input', 'start_day')
-    hh = tools.pick_value('namelist.input', 'start_hour')
+    yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
+    mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
+    dd = tools.pick_value('namelist.input', 'start_day').zfill(2)
+    hh = tools.pick_value('namelist.input', 'start_hour').zfill(2)
 
     datehour = yyyy + mm + dd + hh
 
@@ -315,8 +315,7 @@ exit 0""")
 
 def run_real():
 
-    wps_work = os.path.join(env_vars.WPS_ROOT, env_vars.RUN_NAME)
-    subprocess.call('ln -sf ' + wps_work + '/met_em* .', shell=True)
+    subprocess.call('ln -sf ' + env_vars.RESULTS_WPS + '/met_em* .', shell=True)
 
     if env_vars.MPI_WRF == False:
         subprocess.call('./real.exe', shell=True)
@@ -331,7 +330,7 @@ def run_real():
 
     datehour = yyyy + mm + dd + hh
 
-    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrf*') + ' .', shell=True)
+    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrf* .'), shell=True)
 
 def run_wrf():
 
@@ -348,4 +347,4 @@ def run_wrf():
 
     datehour = yyyy + mm + dd + hh
 
-    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_WRF, datehour, 'wrf*') + ' .', shell=True)
+    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_WRF, datehour, 'wrf* .'), shell=True)

@@ -70,6 +70,12 @@ def make_namelist():
     dx = str(env_vars.DX[0])
     dy = str(env_vars.DY[0])
 
+    ref_lat = str(env_vars.REF_LAT)
+    ref_lon = str(env_vars.REF_LON)
+    truelat1 = str(env_vars.TRUELAT1)
+    truelat2 = str(env_vars.TRUELAT2)
+    stand_lon = str(env_vars.STAND_LON)
+
     namelist = open('namelist.wps', 'w')
     #=================== configuration-s ===================
     namelist.write("""
@@ -77,7 +83,7 @@ def make_namelist():
      wrf_core = 'ARW',
      max_dom = """ + max_dom + """,
      start_date = '""" + start_time + """','""" + start_time + """',
-     end_date   = '""" + end_time + """',''""" + end_time + """',
+     end_date   = '""" + end_time + """','""" + end_time + """',
      interval_seconds = 21600,
      io_form_geogrid = 2,
      debug_level=10
@@ -86,19 +92,19 @@ def make_namelist():
     &geogrid
      parent_id         =   1,   1,   1,
      parent_grid_ratio =   1,   3,   3,
-     i_parent_start    =  """ + i_p_s + """,
-     j_parent_start    =  """ + j_p_s + """,
+     i_parent_start    =  """ + i_parent_start + """,
+     j_parent_start    =  """ + j_parent_start + """,
      e_we              =  """ + e_we + """,
      e_sn              =  """ + e_sn + """
-     geog_data_res     = '10m','30s',
+     geog_data_res     = '30s','30s',
      dx = """ + dx + """,
      dy = """ + dy + """,
      map_proj = 'lambert',
-     ref_lat   = 27,
-     ref_lon   = -70,
-     truelat1  = 20,
-     truelat2  = 35,
-     stand_lon = -70,
+     ref_lat   = """ + ref_lat + """,
+     ref_lon   = """ + ref_lon + """,
+     truelat1  = """ + truelat1 + """,
+     truelat2  = """ + truelat2 + """,
+     stand_lon = """ + stand_lon + """,
      geog_data_path = '""" + env_vars.GEOG_DATA_PATH + """'
     /
 
@@ -110,6 +116,20 @@ def make_namelist():
     &metgrid
      fg_name = 'FILE',
      io_form_metgrid = 2
+    /
+
+    &mod_levs
+     press_pa = 201300 , 200100 , 100000 ,
+                975000 ,  95000 ,  90000 ,
+                85000 ,  80000 ,
+                75000 ,  70000 ,
+                65000 ,  60000 ,
+                55000 ,  50000 ,
+                45000 ,  40000 ,
+                35000 ,  30000 ,
+                25000 ,  20000 ,
+                15000 ,  10000 ,
+                5000 ,   1000
     /
     """)
     #=================== configuration-e ===================
@@ -137,3 +157,6 @@ def run_metgrid():
 
     else:
         subprocess.call('qsub -sync y metgrid.job', shell=True)
+
+    subprocess.call('mv met_em* ' + env_vars.RESULTS_WPS, shell=True)
+    subprocess.call('ln -sf ' + env_vars.RESULTS_WPS + '/met_em* .', shell=True)

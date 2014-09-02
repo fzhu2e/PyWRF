@@ -37,7 +37,6 @@ def init(args):
     env_vars.FNL_DATA_PATH = '/data/fzhu/Data/ForSDAT/ncep'
     env_vars.CRTM_PATH = '/data/fzhu/Data/ForGSI/CRTM_Coefficients'
 
-
     # model root
     env_vars.WPS_ROOT = '/data/fzhu/Tools/WRF-3.2.1/WPS'
     env_vars.WRF_ROOT = '/data/fzhu/Tools/WRF-3.2.1/WRFV3'
@@ -50,15 +49,22 @@ def init(args):
     env_vars.MPI_WRFDA = False
     env_vars.MPI_GSI = True
 
+    # domain
     env_vars.TIME_STEP = 60
     env_vars.MAX_DOM = 1
-    env_vars.E_WE = [400, 0, 0]
-    env_vars.E_SN = [350, 0, 0]
+    env_vars.E_WE = [500, 0, 0]
+    env_vars.E_SN = [240, 0, 0]
     env_vars.E_VERT = [35, 0, 0]
     env_vars.DX = [16000, 0, 0]
     env_vars.DY = [16000, 0, 0]
     env_vars.I_PARENT_START = [1, 0, 0]
     env_vars.J_PARENT_START = [1, 0, 0]
+
+    env_vars.REF_LAT = 33
+    env_vars.REF_LON = -76
+    env_vars.TRUELAT1 = 20
+    env_vars.TRUELAT2 = 40
+    env_vars.STAND_LON = -70
     #=================== configuration-e ===================
 
     # time

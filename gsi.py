@@ -5,6 +5,7 @@ import datetime
 import re
 
 import env_vars
+import tools
 
 def run(args):
     print('Start running GSI...')
@@ -33,16 +34,24 @@ def make_new_run():
     subprocess.call('cp -r ../run/* .', shell=True)
 
 def make_script():
-    yyyy = str(env_vars.ANA_TIME.year)
-    mm = str(env_vars.ANA_TIME.month)
-    dd = str(env_vars.ANA_TIME.day)
-    hh = str(env_vars.ANA_TIME.hour)
+    yyyy = str(env_vars.ANA_TIME.year).zfill(4)
+    mm = str(env_vars.ANA_TIME.month).zfill(2)
+    dd = str(env_vars.ANA_TIME.day).zfill(2)
+    hh = str(env_vars.ANA_TIME.hour).zfill(2)
     ww = str(env_vars.WINDOW.seconds/3600)
 
     ana_time = yyyy + mm + dd + hh
     window = ww
 
     date = yyyy + mm + dd
+
+    datehour = ana_time
+    result_dir = os.path.join(env_vars.RESULTS_GSI, datehour)
+
+    ana_datetime = str(env_vars.ANA_TIME).replace(' ', '_')
+
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
 
     run_script = open('run_gsi.ksh', 'w')
     #=================== configuration-s ===================
@@ -113,14 +122,15 @@ module load szip/2.1
   GSI_ROOT=""" + env_vars.GSI_ROOT + """
   WRF_ROOT=""" + env_vars.WRF_ROOT + """
 
-  WORK_ROOT=/scratch4/fzhu/gsi/run_${ANAL_TIME}
+  WORK_ROOT=/scratch4/fzhu/gsi/
+  RESULTS=""" + result_dir + """
 
   OBS_ROOT=/data/fzhu/Data/ForOSSE/OSSE/
-  BK_FILE=${WRF_ROOT}/""" + env_vars.RUN_NAME + """/wrfinput_d01
-  PREPBUFR=${OBS_ROOT}/prepbufr/prepbufr.gdas.""" + date + """.t""" + hh + """z.nr_block
+  BK_FILE=${WRF_ROOT}/""" + env_vars.RUN_NAME + """/wrfvar_input_d01_""" + ana_datetime + """
+  PREPBUFR=${OBS_ROOT}/prepbufr/prepbufr.gdas.""" + date + """.t""" + hh + """z.nr_block2
   AMSUABUFR=${OBS_ROOT}/amsua/gdas.1bamua.t""" + hh + """z.""" + date + """.bufr_block
   #AIRSBUFR=${OBS_ROOT}/airs/gdas.airsev.t""" + hh + """z.""" + date + """.bufr_block
-  AIRSBUFR=${OBS_ROOT}/AIRSLEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  AIRSBUFR=${OBS_ROOT}/AIRS_LEO/""" + ana_time + """0000_geo_airs_bufr_clr
 
 # Static data
   CRTM_ROOT=""" + env_vars.CRTM_PATH + """
@@ -309,7 +319,7 @@ ln -s ${PREPBUFR} ./prepbufr
 # ln -s ${OBS_ROOT}/ndas.t12z.1bhrs4.tm12.bufr_d_le hirs4bufr
 # ln -s ${OBS_ROOT}/ndas.t12z.1bmhs.tm12.bufr_d_le mhsbufr
 
-# Feng
+# Feng Zhu
 ln -s ${AMSUABUFR} ./amsuabufr
 ln -s ${AIRSBUFR} ./airsbufr
 #
@@ -427,7 +437,7 @@ else
 fi
 
 # Build the GSI namelist on-the-fly
-# Feng: pay attention to the value of niter, default is 10
+# Feng Zhu: pay attention to the value of "niter", the default is 10
 cat << EOF > gsiparm.anl
  &SETUP
    miter=2,niter(1)=100,niter(2)=100,
@@ -652,9 +662,11 @@ if [ ${if_clean} = clean ]; then
 fi
 
 #==============================
-# Feng
+# Feng Zhu
 #==============================
-rsync -a $WORK_ROOT $GSI_ROOT/run
+rsync -a $WORK_ROOT/* $RESULTS
+
+rm -rf $WORK_ROOT/*
 #==============================
 
 exit 0""")
@@ -667,4 +679,8 @@ def run_gsi():
         subprocess.call('qsub -sync y run_gsi_se.ksh', shell=True)
 
     else:
-        subprocess.call('qsub -sync y run_gsi_dm.ksh', shell=True)
+        subprocess.call('qsub -sync y run_gsi.ksh', shell=True)
+
+    datehour = tools.pick_value('run_gsi.ksh', 'ANAL_TIME')
+
+    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_GSI, datehour, '*') + ' .', shell=True)
