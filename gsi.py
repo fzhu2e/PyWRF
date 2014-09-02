@@ -53,6 +53,13 @@ def make_script():
     if not os.path.exists(result_dir):
         os.mkdir(result_dir)
 
+    print('COLD:', env_vars.COLD)
+    if env_vars.COLD == True:
+        bk_file = os.path.join(env_vars.WRF_ROOT, env_vars.RUN_NAME, 'wrfinput_d01')
+    else:
+        bk_file = os.path.join(env_vars.WRF_ROOT, env_vars.RUN_NAME, 'wrfvar_input_d01_'+ana_datetime)
+    print(bk_file)
+
     run_script = open('run_gsi.ksh', 'w')
     #=================== configuration-s ===================
     run_script.write("""#!/bin/ksh
@@ -120,13 +127,12 @@ module load szip/2.1
   ANAL_TIME=""" + ana_time + """
 
   GSI_ROOT=""" + env_vars.GSI_ROOT + """
-  WRF_ROOT=""" + env_vars.WRF_ROOT + """
 
   WORK_ROOT=/scratch4/fzhu/gsi/
   RESULTS=""" + result_dir + """
 
   OBS_ROOT=/data/fzhu/Data/ForOSSE/OSSE/
-  BK_FILE=${WRF_ROOT}/""" + env_vars.RUN_NAME + """/wrfvar_input_d01_""" + ana_datetime + """
+  BK_FILE=""" + bk_file + """
   PREPBUFR=${OBS_ROOT}/prepbufr/prepbufr.gdas.""" + date + """.t""" + hh + """z.nr_block2
   AMSUABUFR=${OBS_ROOT}/amsua/gdas.1bamua.t""" + hh + """z.""" + date + """.bufr_block
   #AIRSBUFR=${OBS_ROOT}/airs/gdas.airsev.t""" + hh + """z.""" + date + """.bufr_block
@@ -145,7 +151,8 @@ module load szip/2.1
 #            no     : leave running directory as is (this is for debug only)
   bk_core=ARW
   #bk_core=NMM
-  bkcv_option=NAM
+  #bkcv_option=NAM
+  bkcv_option=GLOBAL
   if_clean=clean
 #
 #
@@ -666,7 +673,7 @@ fi
 #==============================
 rsync -a $WORK_ROOT/* $RESULTS
 
-rm -rf $WORK_ROOT/*
+#rm -rf $WORK_ROOT/*
 #==============================
 
 exit 0""")
@@ -683,4 +690,4 @@ def run_gsi():
 
     datehour = tools.pick_value('run_gsi.ksh', 'ANAL_TIME')
 
-    subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_GSI, datehour, '*') + ' .', shell=True)
+    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_GSI, datehour, '*') + ' .', shell=True)

@@ -59,6 +59,9 @@ def main():
     parser_wps.add_argument('-o', '--workdir',
             help='work directory')
 
+    parser_wps.add_argument('-i', '--interval_seconds',
+            help='interval seconds')
+
     # below are just for make_namelist task
     parser_wps.add_argument('-s', '--start',
             help='start time')
@@ -83,6 +86,9 @@ def main():
     parser_wrf.add_argument('-o', '--workdir',
             help='work directory')
 
+    parser_wrf.add_argument('-i', '--interval_seconds',
+            help='interval seconds')
+
     # below are just for make_namelist task
     parser_wrf.add_argument('-s', '--start',
             help='start time')
@@ -100,7 +106,8 @@ def main():
     #============================================
     parser_wrfda.add_argument('-t', '--task',
             required=True,
-            choices=['make_new_run', 'make_parame', 'da_update_bc'],
+            #choices=['make_new_run', 'make_parame', 'da_update_bc'],
+            choices=['make_new_run', 'da_update_bc'],
             help='running task')
 
     parser_wrfda.add_argument('-o', '--workdir',
@@ -123,6 +130,9 @@ def main():
 
     parser_gsi.add_argument('-w', '--window',
             help='assimilation window')
+
+    parser_gsi.add_argument('-c', '--cold',
+            help='if cold start')
 
     # parse the input command line
     args = parser.parse_args()

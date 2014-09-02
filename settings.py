@@ -49,12 +49,18 @@ def init(args):
     env_vars.MPI_WRFDA = False
     env_vars.MPI_GSI = True
 
+    # time
+    env_vars.HISTROY_INTERVAL = [180, 0, 0]
+    env_vars.INPUTOUT_INTERVAL = 180
+    env_vars.INPUTOUT_BEGIN_H = 3
+    env_vars.INPUTOUT_END_H = 6
+
     # domain
-    env_vars.TIME_STEP = 60
+    env_vars.TIME_STEP = 50
     env_vars.MAX_DOM = 1
     env_vars.E_WE = [500, 0, 0]
     env_vars.E_SN = [240, 0, 0]
-    env_vars.E_VERT = [35, 0, 0]
+    env_vars.E_VERT = [72, 0, 0]
     env_vars.DX = [16000, 0, 0]
     env_vars.DY = [16000, 0, 0]
     env_vars.I_PARENT_START = [1, 0, 0]
@@ -65,6 +71,9 @@ def init(args):
     env_vars.TRUELAT1 = 20
     env_vars.TRUELAT2 = 40
     env_vars.STAND_LON = -70
+
+    # time
+    env_vars.P_TOP_REQUESTED = 5000
     #=================== configuration-e ===================
 
     # time
@@ -91,6 +100,10 @@ def init(args):
             env_vars.RUNNING_HOURS = datetime.timedelta(hours=int(rh))
             env_vars.END_TIME = env_vars.START_TIME + env_vars.RUNNING_HOURS
 
+    if hasattr(args, 'interval_seconds'):
+        if args.interval_seconds is not None:
+            env_vars.INTERVAL_SECONDS = args.interval_seconds
+
     if hasattr(args, 'ana'):
         if args.ana is not None:
             yyyy = args.ana[0:4]
@@ -105,6 +118,13 @@ def init(args):
             env_vars.WINDOW = datetime.timedelta(hours=int(ww))
         else:
             env_vars.WINDOW = datetime.timedelta(hours=1.5)
+
+    if hasattr(args, 'cold'):
+        if args.cold is not None:
+            env_vars.COLD = True
+        else:
+            env_vars.COLD = False
+
 
     # run_name
     if args.workdir is not None:
