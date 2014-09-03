@@ -59,9 +59,6 @@ def main():
     parser_wps.add_argument('-o', '--workdir',
             help='work directory')
 
-    parser_wps.add_argument('-i', '--interval_seconds',
-            help='interval seconds')
-
     # below are just for make_namelist task
     parser_wps.add_argument('-s', '--start',
             help='start time')
@@ -73,6 +70,16 @@ def main():
 
     wps_run_length.add_argument('-r', '--run',
             help='running hours')
+
+    # other parameters
+    parser_wps.add_argument('-i', '--interval_seconds',
+            help='interval seconds')
+
+    parser_wps.add_argument('--spec_bdy_width',
+            help='boundary width')
+
+    parser_wps.add_argument('--relax_zone',
+            help='relax zone')
 
     #============================================
     # WRF
@@ -86,9 +93,6 @@ def main():
     parser_wrf.add_argument('-o', '--workdir',
             help='work directory')
 
-    parser_wrf.add_argument('-i', '--interval_seconds',
-            help='interval seconds')
-
     # below are just for make_namelist task
     parser_wrf.add_argument('-s', '--start',
             help='start time')
@@ -100,6 +104,19 @@ def main():
 
     wrf_run_length.add_argument('-r', '--run',
             help='running hours')
+
+    # other parameters
+    parser_wrf.add_argument('-i', '--interval_seconds',
+            help='interval seconds')
+
+    parser_wrf.add_argument('--spec_bdy_width',
+            help='boundary width')
+
+    parser_wrf.add_argument('--relax_zone',
+            help='relax zone')
+
+    parser_wrf.add_argument('--damp_opt',
+            help='relax zone')
 
     #============================================
     # WRFDA

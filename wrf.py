@@ -183,7 +183,7 @@ def make_namelist():
  diff_6th_opt                        = 0,      0,      0,
  diff_6th_factor                     = 0.12,   0.12,   0.12,
  base_temp                           = 290.
- damp_opt                            = 1,
+ damp_opt                            = """ + str(env_vars.DAMP_OPT) + """,
  zdamp                               = 5000.,  5000.,  5000.,
  dampcoef                            = 0.2,    0.2,    0.2
  khdif                               = 0,      0,      0,
@@ -194,10 +194,10 @@ def make_namelist():
  /
 
  &bdy_control
- spec_bdy_width                      = 9,
+ spec_bdy_width                      = """ + str(env_vars.SPEC_BDY_WIDTH) + """,
  spec_zone                           = 1,
- relax_zone                          = 8,
- specified                           = .true., .false.,.false.,
+ relax_zone                          = """ + str(env_vars.RELAX_ZONE) + """,
+ specified                           = .true., .false., .false.,
  nested                              = .false., .true., .true.,
  /
 

@@ -4,6 +4,7 @@ import env_vars
 import os
 
 def init(args):
+
     # path
     env_vars.PYWRF_ROOT = os.getcwd()
 
@@ -49,6 +50,9 @@ def init(args):
     env_vars.MPI_WRFDA = False
     env_vars.MPI_GSI = True
 
+    #====================
+    # for WPS and WRF
+    #====================
     # time
     env_vars.HISTROY_INTERVAL = [180, 0, 0]
     env_vars.INPUTOUT_INTERVAL = 180
@@ -72,10 +76,20 @@ def init(args):
     env_vars.TRUELAT2 = 40
     env_vars.STAND_LON = -70
 
-    # time
     env_vars.P_TOP_REQUESTED = 5000
+
     #=================== configuration-e ===================
 
+    # run_name
+    if args.workdir is not None:
+        env_vars.RUN_NAME = args.workdir
+    else:
+        env_vars.CASE_NAME = str(env_vars.START_TIME.year) + str(env_vars.START_TIME.month) + str(env_vars.START_TIME.day) + str(env_vars.START_TIME.hour)
+        env_vars.RUN_NAME = env_vars.PROJECT_NAME + '.' + env_vars.CASE_NAME
+
+    #====================
+    # for WPS and WRF
+    #====================
     # time
     if hasattr(args, 'start'):
         if args.start is not None:
@@ -104,6 +118,28 @@ def init(args):
         if args.interval_seconds is not None:
             env_vars.INTERVAL_SECONDS = args.interval_seconds
 
+    # model
+    if hasattr(args, 'damp_opt'):
+        if args.damp_opt is not None:
+            env_vars.DAMP_OPT = args.damp_opt
+        else:
+            env_vars.DAMP_OPT = 0
+
+    if hasattr(args, 'spec_bdy_width'):
+        if args.spec_bdy_width is not None:
+            env_vars.SPEC_BDY_WIDTH = args.spec_bdy_width
+        else:
+            env_vars.SPEC_BDY_WIDTH = 10
+
+    if hasattr(args, 'relax_zone'):
+        if args.relax_zone is not None:
+            env_vars.RELAX_ZONE = args.relax_zone
+        else:
+            env_vars.RELAX_ZONE = 9
+
+    #====================
+    # for GSI
+    #====================
     if hasattr(args, 'ana'):
         if args.ana is not None:
             yyyy = args.ana[0:4]
@@ -125,17 +161,16 @@ def init(args):
         else:
             env_vars.COLD = False
 
+    if hasattr(args, 'window'):
+        if args.window is not None:
+            ww = args.window
+            env_vars.WINDOW = datetime.timedelta(hours=int(ww))
+        else:
+            env_vars.WINDOW = datetime.timedelta(hours=1.5)
 
-    # run_name
-    if args.workdir is not None:
-        env_vars.RUN_NAME = args.workdir
-    else:
-        env_vars.CASE_NAME = str(env_vars.START_TIME.year) + str(env_vars.START_TIME.month) + str(env_vars.START_TIME.day) + str(env_vars.START_TIME.hour)
-        env_vars.RUN_NAME = env_vars.PROJECT_NAME + '.' + env_vars.CASE_NAME
-
-    # domain
-
+    #====================
     # print
+    #====================
     print('==================================')
     print('Start running PyWRF...')
     print('----------------------------------')
