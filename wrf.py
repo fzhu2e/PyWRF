@@ -66,7 +66,7 @@ def make_namelist():
     dy = re.sub(r'\[|\]', '', str(env_vars.DY))
 
     interval_seconds = str(env_vars.INTERVAL_SECONDS)
-    histroy_interval = re.sub(r'\[|\]', '', str(env_vars.HISTROY_INTERVAL))
+    history_interval = re.sub(r'\[|\]', '', str(env_vars.HISTORY_INTERVAL))
     inputout_interval = str(env_vars.INPUTOUT_INTERVAL)
     inputout_begin_h = str(env_vars.INPUTOUT_BEGIN_H)
     inputout_end_h = str(env_vars.INPUTOUT_END_H)
@@ -94,7 +94,7 @@ def make_namelist():
  end_second                          = 00,   00,   00,
  interval_seconds                    = """ + interval_seconds + """,
  input_from_file                     = .true.,.true.,.true.,
- history_interval                    = """ + histroy_interval + """,
+ history_interval                    = """ + history_interval + """,
  frames_per_outfile                  = 1, 1000, 1000,
  restart                             = .false.,
  restart_interval                    = 5000,
@@ -267,7 +267,7 @@ mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
 rsync -a ./wrfinput* $RESULTS
 rsync -a ./wrfbdy* $RESULTS
 
-#rm -rf ./*
+rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
@@ -329,7 +329,7 @@ mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
 rsync -a ./wrfout* $RESULTS
 rsync -a ./wrfvar* $RESULTS
 
-#rm -rf ./*
+rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
@@ -353,6 +353,7 @@ def run_real():
     datehour = yyyy + mm + dd + hh
 
     subprocess.call('cp ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrf* .'), shell=True)
+    subprocess.call('cp namelist.input ' + os.path.join(env_vars.RESULTS_REAL, datehour), shell=True)
 
 def run_wrf():
 
@@ -369,4 +370,5 @@ def run_wrf():
 
     datehour = yyyy + mm + dd + hh
 
-    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_WRF, datehour, 'wrf* .'), shell=True)
+    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_WRF, datehour, 'wrfvar* .'), shell=True)
+    subprocess.call('cp namelist.input ' + os.path.join(env_vars.RESULTS_WRF, datehour), shell=True)

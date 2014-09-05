@@ -53,11 +53,6 @@ def init(args):
     #====================
     # for WPS and WRF
     #====================
-    # time
-    env_vars.HISTROY_INTERVAL = [180, 0, 0]
-    env_vars.INPUTOUT_INTERVAL = 180
-    env_vars.INPUTOUT_BEGIN_H = 3
-    env_vars.INPUTOUT_END_H = 6
 
     # domain
     env_vars.TIME_STEP = 50
@@ -114,9 +109,36 @@ def init(args):
             env_vars.RUNNING_HOURS = datetime.timedelta(hours=int(rh))
             env_vars.END_TIME = env_vars.START_TIME + env_vars.RUNNING_HOURS
 
+    # time
     if hasattr(args, 'interval_seconds'):
         if args.interval_seconds is not None:
             env_vars.INTERVAL_SECONDS = args.interval_seconds
+        else:
+            env_vars.INTERVAL_SECONDS = 21600
+
+    if hasattr(args, 'history_interval'):
+        if args.history_interval is not None:
+            env_vars.HISTORY_INTERVAL = args.history_interval
+        else:
+            env_vars.HISTORY_INTERVAL = [360, 0, 0]
+
+    if hasattr(args, 'inputout_interval'):
+        if args.inputout_interval is not None:
+            env_vars.INPUTOUT_INTERVAL = args.inputout_interval
+        else:
+            env_vars.INPUTOUT_INTERVAL = 360
+
+    if hasattr(args, 'inputout_begin_h'):
+        if args.inputout_begin_h is not None:
+            env_vars.INPUTOUT_BEGIN_H = args.inputout_begin_h
+        else:
+            env_vars.INPUTOUT_BEGIN_H = 6
+
+    if hasattr(args, 'inputout_end_h'):
+        if args.inputout_end_h is not None:
+            env_vars.INPUTOUT_END_H = args.inputout_end_h
+        else:
+            env_vars.INPUTOUT_END_H = 6
 
     # model
     if hasattr(args, 'damp_opt'):
@@ -138,7 +160,7 @@ def init(args):
             env_vars.RELAX_ZONE = 9
 
     #====================
-    # for GSI
+    # for GSI and WRFDA
     #====================
     if hasattr(args, 'ana'):
         if args.ana is not None:

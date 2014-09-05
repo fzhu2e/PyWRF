@@ -371,8 +371,10 @@ else
 fi
 
 SATANGL=${FIX_ROOT}/global_satangbias.txt
-SATINFO=${FIX_ROOT}/global_satinfo.txt
-CONVINFO=${FIX_ROOT}/global_convinfo.txt
+#SATINFO=${FIX_ROOT}/global_satinfo.txt
+SATINFO=${FIX_ROOT}/global_satinfo_nobias.txt
+#CONVINFO=${FIX_ROOT}/global_convinfo.txt
+CONVINFO=${FIX_ROOT}/nam_regional_convinfo.txt
 OZINFO=${FIX_ROOT}/global_ozinfo.txt
 PCPINFO=${FIX_ROOT}/global_pcpinfo.txt
 
@@ -508,7 +510,7 @@ cat << EOF > gsiparm.anl
    dfile(23)='gsndrbufr', dtype(23)='sndr',      dplat(23)='g12',       dsis(23)='sndr_g12',            dval(23)=0.0,  dthin(23)=1,
    dfile(24)='gimgrbufr', dtype(24)='goes_img',  dplat(24)='g11',       dsis(24)='imgr_g11',            dval(24)=0.0,  dthin(24)=1,
    dfile(25)='gimgrbufr', dtype(25)='goes_img',  dplat(25)='g12',       dsis(25)='imgr_g12',            dval(25)=0.0,  dthin(25)=1,
-   dfile(26)='airsbufr',  dtype(26)='airs',      dplat(26)='aqua',      dsis(26)='airs281SUBSET_aqua',  dval(26)=20.0, dthin(26)=1,
+   dfile(26)='airsbufr',  dtype(26)='airs',      dplat(26)='aqua',      dsis(26)='airs281SUBSET_aqua',  dval(26)=20.0, dthin(26)=2,
    dfile(27)='msubufr',   dtype(27)='msu',       dplat(27)='n14',       dsis(27)='msu_n14',             dval(27)=2.0,  dthin(27)=2,
    dfile(28)='amsuabufr', dtype(28)='amsua',     dplat(28)='n15',       dsis(28)='amsua_n15',           dval(28)=10.0, dthin(28)=2,
    dfile(29)='amsuabufr', dtype(29)='amsua',     dplat(29)='n16',       dsis(29)='amsua_n16',           dval(29)=0.0,  dthin(29)=2,
@@ -690,4 +692,10 @@ def run_gsi():
 
     datehour = tools.pick_value('run_gsi.ksh', 'ANAL_TIME')
 
-    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_GSI, datehour, '*') + ' .', shell=True)
+    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_GSI, datehour, '* .'), shell=True)
+    subprocess.call('cp run_gsi.ksh ' + os.path.join(env_vars.RESULTS_GSI, datehour), shell=True)
+
+    subprocess.call('rm -f ' + os.path.join(env_vars.WRF_ROOT, env_vars.RUN_NAME, 'wrfvar*'), shell=True)
+    subprocess.call('rm -f ' + os.path.join(env_vars.WRF_ROOT, env_vars.RUN_NAME, 'wrfinput_d01'), shell=True)
+
+    subprocess.call('cp wrf_inout ' + os.path.join(env_vars.WRF_ROOT, env_vars.RUN_NAME, 'wrfinput_d01'), shell=True)

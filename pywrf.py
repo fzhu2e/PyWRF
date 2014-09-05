@@ -109,6 +109,18 @@ def main():
     parser_wrf.add_argument('-i', '--interval_seconds',
             help='interval seconds')
 
+    parser_wrf.add_argument('--history_interval',
+            help='history interval')
+
+    parser_wrf.add_argument('--inputout_interval',
+            help='inputout interval')
+
+    parser_wrf.add_argument('--inputout_begin_h',
+            help='inputout begin hour')
+
+    parser_wrf.add_argument('--inputout_end_h',
+            help='inputout end hour')
+
     parser_wrf.add_argument('--spec_bdy_width',
             help='boundary width')
 
@@ -129,6 +141,9 @@ def main():
 
     parser_wrfda.add_argument('-o', '--workdir',
             help='work directory')
+
+    parser_wrfda.add_argument('-a', '--ana',
+            help='analysis time')
 
     #============================================
     # GSI

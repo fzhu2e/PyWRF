@@ -36,20 +36,26 @@ def make_new_run():
     #pass
 
 def run_da_update_bc():
+    yyyy = str(env_vars.ANA_TIME.year).zfill(4)
+    mm = str(env_vars.ANA_TIME.month).zfill(2)
+    dd = str(env_vars.ANA_TIME.day).zfill(2)
+    hh = str(env_vars.ANA_TIME.hour).zfill(2)
 
-    subprocess.call('ln -sf ' + env_vars.RESULTS_WPS + '/met_em* .', shell=True)
+    ana_time = yyyy + mm + dd + hh
 
-    if env_vars.MPI_WRF == False:
-        subprocess.call('./real.exe', shell=True)
+    datehour = ana_time
 
-    else:
-        subprocess.call('qsub -sync y real.job', shell=True)
+    result_dir = os.path.join(env_vars.RESULTS_DA_UPDATE_BC, datehour)
 
-    yyyy = tools.pick_value('namelist.input', 'start_year')
-    mm = tools.pick_value('namelist.input', 'start_month')
-    dd = tools.pick_value('namelist.input', 'start_day')
-    hh = tools.pick_value('namelist.input', 'start_hour')
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
 
-    datehour = yyyy + mm + dd + hh
+    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrfbdy_d01 .'), shell=True)
+    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_GSI, datehour, 'wrf_inout wrfvar_output'), shell=True)
 
-    #subprocess.call('ln -sf ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrf* .'), shell=True)
+    subprocess.call('./da_update_bc.exe', shell=True)
+
+    subprocess.call('cp wrfbdy_d01 ' + result_dir, shell=True)
+
+    subprocess.call('rm -f ' + os.path.join(env_vars.WRF_ROOT, env_vars.RUN_NAME, 'wrfbdy_d01'), shell=True)
+    subprocess.call('cp wrfbdy_d01 ' + os.path.join(env_vars.WRF_ROOT, env_vars.RUN_NAME), shell=True)

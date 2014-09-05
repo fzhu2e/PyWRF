@@ -152,6 +152,10 @@ def run_ungrib():
         subprocess.call('qsub -sync y ungrib.job', shell=True)
 
 def run_metgrid():
+
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
+
     if env_vars.MPI_WPS == False:
         subprocess.call('./metgrid.exe', shell=True)
 
@@ -159,4 +163,5 @@ def run_metgrid():
         subprocess.call('qsub -sync y metgrid.job', shell=True)
 
     subprocess.call('cp met_em* ' + env_vars.RESULTS_WPS, shell=True)
+    subprocess.call('cp namelist.wps ' + env_vars.RESULTS_WPS, shell=True)
     #subprocess.call('ln -sf ' + env_vars.RESULTS_WPS + '/met_em* .', shell=True)
