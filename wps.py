@@ -153,9 +153,6 @@ def run_ungrib():
 
 def run_metgrid():
 
-    if not os.path.exists(result_dir):
-        os.mkdir(result_dir)
-
     if env_vars.MPI_WPS == False:
         subprocess.call('./metgrid.exe', shell=True)
 
