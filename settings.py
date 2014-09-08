@@ -11,7 +11,7 @@ def init(args):
     #=================== configuration-s ===================
     # Project
     env_vars.PROJECT_NAME = 'OSSE'
-    env_vars.RESULTS_ROOT = '/data/fzhu/Results'
+    env_vars.RESULTS_ROOT = '/data/users/fzhu/Results'
 
     env_vars.RESULTS = os.path.join(env_vars.RESULTS_ROOT, env_vars.PROJECT_NAME)
     env_vars.RESULTS_WPS = os.path.join(env_vars.RESULTS, 'wps')
@@ -34,15 +34,17 @@ def init(args):
             os.mkdir(tmp_dir)
 
     # data path
-    env_vars.GEOG_DATA_PATH = '/data/fzhu/Data/ForWPS/geog_data_pwang/geog'
-    env_vars.FNL_DATA_PATH = '/data/fzhu/Data/ForSDAT/ncep'
-    env_vars.CRTM_PATH = '/data/fzhu/Data/ForGSI/CRTM_Coefficients'
+    env_vars.GEOG_DATA_PATH = '/data/users/fzhu/Data/ForWPS/geog_data'
+    env_vars.FNL_DATA_PATH = '/data/users/fzhu/Data/FNL'
+    env_vars.CRTM_PATH = '/data/users/fzhu/Data/ForGSI/CRTM_Coefficients'
+
+    env_vars.OBS_ROOT = '/data/users/fzhu/Data/ForOSSE'
 
     # model root
-    env_vars.WPS_ROOT = '/data/fzhu/Tools/WRF-3.2.1/WPS'
-    env_vars.WRF_ROOT = '/data/fzhu/Tools/WRF-3.2.1/WRFV3'
-    env_vars.WRFDA_ROOT = '/data/fzhu/Tools/WRF-3.2.1/WRFDA'
-    env_vars.GSI_ROOT = '/data/fzhu/Tools/GSI/comGSI_v3'
+    env_vars.WPS_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WPS'
+    env_vars.WRF_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFV3'
+    env_vars.WRFDA_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFDA'
+    env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3'
 
     # model setting
     env_vars.MPI_WPS = False

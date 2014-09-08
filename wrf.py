@@ -2,6 +2,7 @@
 import os
 import subprocess
 import re
+import time
 
 import env_vars
 import tools
@@ -26,9 +27,15 @@ def run(args):
     elif args.task == 'make_namelist':
         make_namelist()
 
-    elif args.task == 'make_jobs':
-        make_real_job()
-        make_wrf_job()
+    #elif args.task == 'make_jobs':
+        #make_real_job()
+        #make_wrf_job()
+
+    elif args.task == 'make_real_srun':
+        make_real_srun()
+
+    elif args.task == 'make_wrf_srun':
+        make_wrf_srun()
 
     elif args.task == 'real':
         run_real()
@@ -211,7 +218,131 @@ def make_namelist():
     #=================== configuration-e ===================
     namelist.close()
 
-def make_real_job():
+#def make_real_job():
+
+    #yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
+    #mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
+    #dd = tools.pick_value('namelist.input', 'start_day').zfill(2)
+    #hh = tools.pick_value('namelist.input', 'start_hour').zfill(2)
+
+    #datehour = yyyy + mm + dd + hh
+
+    #result_dir = os.path.join(env_vars.RESULTS_REAL, datehour)
+
+    #if not os.path.exists(result_dir):
+        #os.mkdir(result_dir)
+
+    #job = open('real.job', 'w')
+    ##=================== configuration-s ===================
+    #job.write("""#!/usr/bin/env bash
+
+## Set job name
+##$ -N real_arw
+
+## Merge stdout stderr
+##$ -j y
+
+## Set the number of processors
+##$ -pe mpi2_mpd 48
+
+## Set output directory
+##$ -o $HOME/output
+
+## Source /etc/csh.cshrc for basic environment and modules
+#source /etc/bashrc
+## Set up input, output and executable variables
+## These often differ per job
+#INPUT=""" + env_vars.WORK_ROOT + """
+#RESULTS=""" + result_dir + """
+#EXECUTABLE=./real.exe
+
+## Set up for MPI
+#export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
+
+## Load modules
+#module load bundle/basic-1
+#module load jobvars
+
+#WORK_DIR=/scratch4/fzhu/real/
+## Do our work in our scheduler-assigned temporary directory
+#cd $WORK_DIR
+## Copy your input to your $TMPDIR
+#rsync -a $INPUT/* $WORK_DIR
+##mpiexec
+#mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
+## Copy your results to a directory in /data/$USER
+#rsync -a ./wrfinput* $RESULTS
+#rsync -a ./wrfbdy* $RESULTS
+
+#rm -rf ./*
+
+#exit 0""")
+    ##=================== configuration-e ===================
+    #job.close()
+
+#def make_wrf_job():
+
+    #yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
+    #mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
+    #dd = tools.pick_value('namelist.input', 'start_day').zfill(2)
+    #hh = tools.pick_value('namelist.input', 'start_hour').zfill(2)
+
+    #datehour = yyyy + mm + dd + hh
+
+    #result_dir = os.path.join(env_vars.RESULTS_WRF, datehour)
+
+    #if not os.path.exists(result_dir):
+        #os.mkdir(result_dir)
+
+    #job = open('wrf.job', 'w')
+    ##=================== configuration-s ===================
+    #job.write("""#!/usr/bin/env bash
+
+## Set job name
+##$ -N wrf_arw
+
+## Merge stdout stderr
+##$ -j y
+
+## Set the number of processors
+##$ -pe mpi2_mpd 192
+
+## Set output directory
+##$ -o $HOME/output
+
+## Source /etc/csh.cshrc for basic environment and modules
+#source /etc/bashrc
+## Set up input, output and executable variables
+## These often differ per job
+#INPUT=""" + env_vars.WORK_ROOT + """
+#RESULTS=""" + result_dir + """
+#EXECUTABLE=./wrf.exe
+
+## Set up for MPI
+#export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
+
+## Load modules
+#module load bundle/basic-1
+#module load jobvars
+
+#WORK_DIR=/scratch4/fzhu/wrf
+## Do our work in our scheduler-assigned temporary directory
+#cd $WORK_DIR
+## Copy your input to your $TMPDIR
+#rsync -a $INPUT/* $WORK_DIR
+##mpiexec
+#mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
+## Copy your results to a directory in /data/$USER
+#rsync -a ./wrfout* $RESULTS
+#rsync -a ./wrfvar* $RESULTS
+
+#rm -rf ./*
+
+#exit 0""")
+    ##=================== configuration-e ===================
+    #job.close()
+
+def make_real_srun():
 
     yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
     mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
@@ -225,55 +356,50 @@ def make_real_job():
     if not os.path.exists(result_dir):
         os.mkdir(result_dir)
 
-    job = open('real.job', 'w')
+    user_name = os.environ['USER']
+
+    srun = open('real.srun', 'w')
     #=================== configuration-s ===================
-    job.write("""#!/usr/bin/env bash
+    srun.write("""#!/usr/bin/env bash
+#SBATCH --job-name=real_arw
 
-# Set job name
-#$ -N real_arw
-
-# Merge stdout stderr
-#$ -j y
-
-# Set the number of processors
-#$ -pe mpi2_mpd 48
-
-# Set output directory
-#$ -o $HOME/output
-
-# Source /etc/csh.cshrc for basic environment and modules
+#SBATCH --partition=s4
+#SBATCH --export=NONE
+#SBATCH --ntasks=100
+#SBATCH --mem-per-cpu=6000
+#SBATCH --time=00:30:00
+#SBATCH --output=/scratch/""" + user_name + """/real/real_arw-control.%j
 source /etc/bashrc
-# Set up input, output and executable variables
-# These often differ per job
+module purge
+module load license_intel intel/14.0-2
+module load impi
+module load hdf hdf5
+module load netcdf4/4.1.3
+
+# here you could call a script that creates your srun jobs and manages them
+# or you could just run srun like this
+
 INPUT=""" + env_vars.WORK_ROOT + """
 RESULTS=""" + result_dir + """
 EXECUTABLE=./real.exe
 
-# Set up for MPI
-export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
+WORK_DIR=/scratch/$USER/real
 
-# Load modules
-module load bundle/basic-1
-module load jobvars
-
-WORK_DIR=/scratch4/fzhu/real/
-# Do our work in our scheduler-assigned temporary directory
 cd $WORK_DIR
-# Copy your input to your $TMPDIR
 rsync -a $INPUT/* $WORK_DIR
-#mpiexec
-mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
-# Copy your results to a directory in /data/$USER
-rsync -a ./wrfinput* $RESULTS
+
+srun --cpu_bind=core --distribution=block:block $EXECUTABLE
+
 rsync -a ./wrfbdy* $RESULTS
+rsync -a ./wrfinput* $RESULTS
 
 rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
-    job.close()
+    srun.close()
 
-def make_wrf_job():
+def make_wrf_srun():
 
     yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
     mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
@@ -287,55 +413,59 @@ def make_wrf_job():
     if not os.path.exists(result_dir):
         os.mkdir(result_dir)
 
-    job = open('wrf.job', 'w')
+    user_name = os.environ['USER']
+
+    srun = open('wrf.srun', 'w')
     #=================== configuration-s ===================
-    job.write("""#!/usr/bin/env bash
+    srun.write("""#!/usr/bin/env bash
+#SBATCH --job-name=wrf_arw
 
-# Set job name
-#$ -N wrf_arw
-
-# Merge stdout stderr
-#$ -j y
-
-# Set the number of processors
-#$ -pe mpi2_mpd 192
-
-# Set output directory
-#$ -o $HOME/output
-
-# Source /etc/csh.cshrc for basic environment and modules
+#SBATCH --partition=s4
+#SBATCH --export=NONE
+#SBATCH --ntasks=200
+#SBATCH --mem-per-cpu=6000
+#SBATCH --time=02:00:00
+#SBATCH --output=/scratch/""" + user_name + """/wrf/wrf_arw-control.%j
 source /etc/bashrc
-# Set up input, output and executable variables
-# These often differ per job
+module purge
+module load license_intel intel/14.0-2
+module load impi
+module load hdf hdf5
+module load netcdf4/4.1.3
+
+# here you could call a script that creates your srun jobs and manages them
+# or you could just run srun like this
+
 INPUT=""" + env_vars.WORK_ROOT + """
 RESULTS=""" + result_dir + """
 EXECUTABLE=./wrf.exe
 
-# Set up for MPI
-export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
+WORK_DIR=/scratch/$USER/wrf
 
-# Load modules
-module load bundle/basic-1
-module load jobvars
-
-WORK_DIR=/scratch4/fzhu/wrf
-# Do our work in our scheduler-assigned temporary directory
 cd $WORK_DIR
-# Copy your input to your $TMPDIR
 rsync -a $INPUT/* $WORK_DIR
-#mpiexec
-mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
-# Copy your results to a directory in /data/$USER
-rsync -a ./wrfout* $RESULTS
+
+srun --cpu_bind=core --distribution=block:block $EXECUTABLE
+
 rsync -a ./wrfvar* $RESULTS
+rsync -a ./wrfout* $RESULTS
 
 rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
-    job.close()
+    srun.close()
 
 def run_real():
+
+    yyyy = tools.pick_value('namelist.input', 'start_year')
+    mm = tools.pick_value('namelist.input', 'start_month')
+    dd = tools.pick_value('namelist.input', 'start_day')
+    hh = tools.pick_value('namelist.input', 'start_hour')
+
+    datehour = yyyy + mm + dd + hh
+
+    result_dir = os.path.join(env_vars.RESULTS_REAL, datehour)
 
     subprocess.call('ln -sf ' + env_vars.RESULTS_WPS + '/met_em* .', shell=True)
 
@@ -343,7 +473,18 @@ def run_real():
         subprocess.call('./real.exe', shell=True)
 
     else:
-        subprocess.call('qsub -sync y real.job', shell=True)
+        #subprocess.call('qsub -sync y real.job', shell=True)
+        subprocess.call('sbatch real.srun', shell=True)
+
+    while not tools.real_done(result_dir):
+        print('real.exe is not done, sleep for a while...')
+        time.sleep(10)
+
+    print('real.exe is DONE!!!')
+    subprocess.call('cp ' + os.path.join(result_dir, 'wrf* .'), shell=True)
+    subprocess.call('cp namelist.input ' + result_dir, shell=True)
+
+def run_wrf():
 
     yyyy = tools.pick_value('namelist.input', 'start_year')
     mm = tools.pick_value('namelist.input', 'start_month')
@@ -352,23 +493,27 @@ def run_real():
 
     datehour = yyyy + mm + dd + hh
 
-    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrf* .'), shell=True)
-    subprocess.call('cp namelist.input ' + os.path.join(env_vars.RESULTS_REAL, datehour), shell=True)
+    yyyy = tools.pick_value('namelist.input', 'end_year')
+    mm = tools.pick_value('namelist.input', 'end_month')
+    dd = tools.pick_value('namelist.input', 'end_day')
+    hh = tools.pick_value('namelist.input', 'end_hour')
 
-def run_wrf():
+    end_time = yyyy + '-' + mm + '-' + dd + '_' + hh + ':00:00'
+
+    result_dir = os.path.join(env_vars.RESULTS_WRF, datehour)
 
     if env_vars.MPI_WRF == False:
         subprocess.call('./wrf.exe', shell=True)
 
     else:
-        subprocess.call('qsub -sync y wrf.job', shell=True)
+        #subprocess.call('qsub -sync y wrf.job', shell=True)
+        subprocess.call('sbatch wrf.srun', shell=True)
 
-    yyyy = tools.pick_value('namelist.input', 'start_year')
-    mm = tools.pick_value('namelist.input', 'start_month')
-    dd = tools.pick_value('namelist.input', 'start_day')
-    hh = tools.pick_value('namelist.input', 'start_hour')
+    print(end_time)
+    while not tools.wrf_done(result_dir, end_time):
+        print('wrf.exe is not done, sleep for a while...')
+        time.sleep(10)
 
-    datehour = yyyy + mm + dd + hh
-
-    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_WRF, datehour, 'wrfvar* .'), shell=True)
-    subprocess.call('cp namelist.input ' + os.path.join(env_vars.RESULTS_WRF, datehour), shell=True)
+    print('wrf.exe is DONE!!!')
+    subprocess.call('cp ' + os.path.join(result_dir, 'wrfvar* .'), shell=True)
+    subprocess.call('cp namelist.input ' + result_dir, shell=True)

@@ -87,7 +87,9 @@ def main():
     parser_wrf.add_argument('-t', '--task',
             required=True,
             choices=['make_new_run', 'make_namelist',
-                'make_jobs', 'real', 'wrf'],
+                #'make_jobs', 'real', 'wrf'],
+                'make_real_srun', 'make_wrf_srun',
+                'real', 'wrf'],
             help='running task')
 
     parser_wrf.add_argument('-o', '--workdir',
@@ -135,8 +137,7 @@ def main():
     #============================================
     parser_wrfda.add_argument('-t', '--task',
             required=True,
-            #choices=['make_new_run', 'make_parame', 'da_update_bc'],
-            choices=['make_new_run', 'da_update_bc'],
+            choices=['make_new_run', 'make_parame', 'da_update_bc'],
             help='running task')
 
     parser_wrfda.add_argument('-o', '--workdir',

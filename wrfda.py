@@ -24,16 +24,30 @@ def run(args):
         make_new_run()
 
     elif args.task == 'make_parame':
-        make_namelist()
+        make_parame()
 
     elif args.task == 'da_update_bc':
         run_da_update_bc()
 
 def make_new_run():
-    subprocess.call('cp ../var/test/update_bc/* .', shell=True)
+    subprocess.call('cp ../var/build/da_update_bc.exe .', shell=True)
 
-#def make_parame():
-    #pass
+def make_parame():
+    parame = open('parame.in', 'w')
+    #=================== configuration-s ===================
+    parame.write("""&control_param
+ da_file            =   './wrf_inout'
+ wrf_bdy_file       =   './wrfbdy_d01'
+ debug              =   .true.
+ domain_id          =   1
+ update_lateral_bdy =   .true.
+ update_low_bdy     =   .false.
+ update_lsm         =   .false.
+ var4d_lbc          =   .false.
+/
+""")
+    #=================== configuration-e ===================
+    parame.close()
 
 def run_da_update_bc():
     yyyy = str(env_vars.ANA_TIME.year).zfill(4)
@@ -51,7 +65,7 @@ def run_da_update_bc():
         os.mkdir(result_dir)
 
     subprocess.call('cp ' + os.path.join(env_vars.RESULTS_REAL, datehour, 'wrfbdy_d01 .'), shell=True)
-    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_GSI, datehour, 'wrf_inout wrfvar_output'), shell=True)
+    subprocess.call('cp ' + os.path.join(env_vars.RESULTS_GSI, datehour, 'wrf_inout .'), shell=True)
 
     subprocess.call('./da_update_bc.exe', shell=True)
 
