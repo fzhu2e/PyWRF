@@ -386,6 +386,7 @@ EXECUTABLE=./real.exe
 WORK_DIR=/scratch/$USER/real
 
 cd $WORK_DIR
+rm -rf ./*
 rsync -a $INPUT/* $WORK_DIR
 
 srun --cpu_bind=core --distribution=block:block $EXECUTABLE
@@ -393,7 +394,7 @@ srun --cpu_bind=core --distribution=block:block $EXECUTABLE
 rsync -a ./wrfbdy* $RESULTS
 rsync -a ./wrfinput* $RESULTS
 
-rm -rf ./*
+#rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
@@ -443,6 +444,7 @@ EXECUTABLE=./wrf.exe
 WORK_DIR=/scratch/$USER/wrf
 
 cd $WORK_DIR
+rm -rf ./*
 rsync -a $INPUT/* $WORK_DIR
 
 srun --cpu_bind=core --distribution=block:block $EXECUTABLE
@@ -450,7 +452,7 @@ srun --cpu_bind=core --distribution=block:block $EXECUTABLE
 rsync -a ./wrfvar* $RESULTS
 rsync -a ./wrfout* $RESULTS
 
-rm -rf ./*
+#rm -rf ./*
 
 exit 0""")
     #=================== configuration-e ===================
@@ -478,7 +480,7 @@ def run_real():
 
     while not tools.real_done(result_dir):
         print('real.exe is not done, sleep for a while...')
-        time.sleep(10)
+        time.sleep(30)
 
     print('real.exe is DONE!!!')
     subprocess.call('cp ' + os.path.join(result_dir, 'wrf* .'), shell=True)
@@ -512,7 +514,7 @@ def run_wrf():
     print(end_time)
     while not tools.wrf_done(result_dir, end_time):
         print('wrf.exe is not done, sleep for a while...')
-        time.sleep(10)
+        time.sleep(30)
 
     print('wrf.exe is DONE!!!')
     subprocess.call('cp ' + os.path.join(result_dir, 'wrfvar* .'), shell=True)

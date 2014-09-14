@@ -146,6 +146,9 @@ def main():
     parser_wrfda.add_argument('-a', '--ana',
             help='analysis time')
 
+    parser_wrfda.add_argument('-l', '--lower', action='store_true',
+            help='update lower boundary condition')
+
     #============================================
     # GSI
     #============================================
@@ -164,7 +167,7 @@ def main():
     parser_gsi.add_argument('-w', '--window',
             help='assimilation window')
 
-    parser_gsi.add_argument('-c', '--cold',
+    parser_gsi.add_argument('-c', '--cold', action='store_true',
             help='if cold start')
 
     # parse the input command line

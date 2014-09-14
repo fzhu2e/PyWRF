@@ -36,7 +36,8 @@ def init(args):
     # data path
     env_vars.GEOG_DATA_PATH = '/data/users/fzhu/Data/ForWPS/geog_data'
     env_vars.FNL_DATA_PATH = '/data/users/fzhu/Data/FNL'
-    env_vars.CRTM_PATH = '/data/users/fzhu/Data/ForGSI/CRTM_Coefficients'
+    #env_vars.CRTM_PATH = '/data/users/fzhu/Data/ForGSI/CRTM_Coefficients'
+    env_vars.CRTM_PATH = '/data/users/fzhu/Data/ForGSI/CRTM_REL-2.1.3'
 
     env_vars.OBS_ROOT = '/data/users/fzhu/Data/ForOSSE'
 
@@ -44,7 +45,8 @@ def init(args):
     env_vars.WPS_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WPS'
     env_vars.WRF_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFV3'
     env_vars.WRFDA_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFDA'
-    env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3'
+    #env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3'
+    env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3.3'
 
     # model setting
     env_vars.MPI_WPS = False
@@ -180,17 +182,16 @@ def init(args):
             env_vars.WINDOW = datetime.timedelta(hours=1.5)
 
     if hasattr(args, 'cold'):
-        if args.cold is not None:
+        if args.cold is True:
             env_vars.COLD = True
         else:
             env_vars.COLD = False
 
-    if hasattr(args, 'window'):
-        if args.window is not None:
-            ww = args.window
-            env_vars.WINDOW = datetime.timedelta(hours=int(ww))
+    if hasattr(args, 'lower'):
+        if args.lower is True:
+            env_vars.LOWER = True
         else:
-            env_vars.WINDOW = datetime.timedelta(hours=1.5)
+            env_vars.LOWER = False
 
     #====================
     # print
