@@ -365,10 +365,10 @@ def make_real_srun():
 
 #SBATCH --partition=s4
 #SBATCH --export=NONE
-#SBATCH --ntasks=100
+#SBATCH --ntasks=""" + str(env_vars.REAL_PROC) + """
 #SBATCH --mem-per-cpu=6000
 #SBATCH --time=00:30:00
-#SBATCH --output=/scratch/""" + user_name + """/real/real_arw-control.%j
+#SBATCH --output=/scratch/""" + user_name + """/tmp/real_arw-control.%j
 source /etc/bashrc
 module purge
 module load license_intel intel/14.0-2
@@ -423,10 +423,10 @@ def make_wrf_srun():
 
 #SBATCH --partition=s4
 #SBATCH --export=NONE
-#SBATCH --ntasks=200
+#SBATCH --ntasks=""" + str(env_vars.WRF_PROC) + """
 #SBATCH --mem-per-cpu=6000
 #SBATCH --time=02:00:00
-#SBATCH --output=/scratch/""" + user_name + """/wrf/wrf_arw-control.%j
+#SBATCH --output=/scratch/""" + user_name + """/tmp/wrf_arw-control.%j
 source /etc/bashrc
 module purge
 module load license_intel intel/14.0-2
@@ -441,7 +441,7 @@ INPUT=""" + env_vars.WORK_ROOT + """
 RESULTS=""" + result_dir + """
 EXECUTABLE=./wrf.exe
 
-WORK_DIR=/scratch/$USER/wrf
+WORK_DIR=/scratch/$USER/wrf/
 
 cd $WORK_DIR
 rm -rf ./*

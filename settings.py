@@ -46,13 +46,18 @@ def init(args):
     env_vars.WRF_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFV3'
     env_vars.WRFDA_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFDA'
     #env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3'
-    env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3.3'
+    #env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3.3'
+    env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3.3_OpenMP'
 
     # model setting
     env_vars.MPI_WPS = False
     env_vars.MPI_WRF = True
     env_vars.MPI_WRFDA = False
     env_vars.MPI_GSI = True
+
+    env_vars.REAL_PROC = 100
+    env_vars.WRF_PROC = 200
+    env_vars.GSI_PROC = 40
 
     #====================
     # for WPS and WRF
