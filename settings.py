@@ -42,12 +42,11 @@ def init(args):
     env_vars.OBS_ROOT = '/data/users/fzhu/Data/ForOSSE'
 
     # model root
-    env_vars.WPS_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WPS'
-    env_vars.WRF_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFV3'
-    env_vars.WRFDA_ROOT = '/home/fzhu/Tools/WRF-3.6.1/WRFDA'
-    #env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3'
-    #env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3.3'
-    env_vars.GSI_ROOT = '/home/fzhu/Tools/GSI/comGSI_v3.3_OpenMP'
+    tools_path = '/data/users/fzhu/Tools'
+    env_vars.WPS_ROOT = os.path.join(tools_path, 'WRF-3.6.1/WPS')
+    env_vars.WRF_ROOT = os.path.join(tools_path, 'WRF-3.6.1/WRFV3')
+    env_vars.WRFDA_ROOT = os.path.join(tools_path, 'WRF-3.6.1/WRFDA')
+    env_vars.GSI_ROOT = os.path.join(tools_path, 'comGSI_v3.3')
 
     # model setting
     env_vars.MPI_WPS = False
@@ -57,7 +56,7 @@ def init(args):
 
     env_vars.REAL_PROC = 100
     env_vars.WRF_PROC = 200
-    env_vars.GSI_PROC = 40
+    env_vars.GSI_PROC = 100
 
     #====================
     # for WPS and WRF
@@ -182,7 +181,7 @@ def init(args):
     if hasattr(args, 'window'):
         if args.window is not None:
             ww = args.window
-            env_vars.WINDOW = datetime.timedelta(hours=int(ww))
+            env_vars.WINDOW = datetime.timedelta(hours=float(ww))
         else:
             env_vars.WINDOW = datetime.timedelta(hours=1.5)
 

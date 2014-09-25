@@ -30,6 +30,7 @@ def run(args):
         run_da_update_bc()
 
 def make_new_run():
+    subprocess.call('rm -rf *', shell=True)
     subprocess.call('cp ../var/build/da_update_bc.exe .', shell=True)
 
 def make_parame():

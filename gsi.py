@@ -758,13 +758,14 @@ module load netcdf4/4.1.3
   PREPBUFR=${OBS_ROOT}/prepbufr/prepbufr.gdas.""" + date + """.t""" + hh + """z.nr_block2
   #AMSUABUFR=${OBS_ROOT}/amsua/gdas.1bamua.t""" + hh + """z.""" + date + """.bufr_block
   #AIRSBUFR=${OBS_ROOT}/airs/gdas.airsev.t""" + hh + """z.""" + date + """.bufr_block
-  #AIRSBUFR=${OBS_ROOT}/AIRS_LEO/""" + ana_time + """0000_geo_airs_bufr_clr
-  AIRSBUFR=${OBS_ROOT}/AIRS_GEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  AIRSBUFR=${OBS_ROOT}/AIRS_LEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/AIRS_GEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/Hourly/WRFNR/GEO/""" + ana_time + """0000_geo_airs_bufr_clr
 
 # Static data
   CRTM_ROOT=""" + env_vars.CRTM_PATH + """
   FIX_ROOT=${GSI_ROOT}/fix
-  GSI_EXE=${GSI_ROOT}/""" + env_vars.RUN_NAME + """/gsi.exe
+  GSI_EXE=${GSI_ROOT}/run/gsi.exe
 
 #------------------------------------------------
 # bk_core= which WRF core is used as background (NMM or ARW)
@@ -773,8 +774,8 @@ module load netcdf4/4.1.3
 # if_clean = clean  : delete temperal files in working directory (default)
 #            no     : leave running directory as is (this is for debug only)
   bk_core=ARW
-  bkcv_option=NAM
-  #bkcv_option=GLOBAL
+  #bkcv_option=NAM
+  bkcv_option=GLOBAL
   if_clean=clean
 #
 #
@@ -919,7 +920,9 @@ fi
 
 SATANGL=${FIX_ROOT}/global_satangbias.txt
 SATINFO=${FIX_ROOT}/global_satinfo.txt
+#SATINFO=${FIX_ROOT}/global_satinfo_nobias.txt
 CONVINFO=${FIX_ROOT}/global_convinfo.txt
+#CONVINFO=${FIX_ROOT}/nam_regional_convinfo.tx
 OZINFO=${FIX_ROOT}/global_ozinfo.txt
 PCPINFO=${FIX_ROOT}/global_pcpinfo.txt
 
@@ -1027,7 +1030,7 @@ cat << EOF > gsiparm.anl
    dfact=0.75,dfact1=3.0,noiqc=.false.,c_varqc=0.02,vadfile='prepbufr',
  /
  &OBS_INPUT
-   dmesh(1)=120.0,dmesh(2)=60.0,dmesh(3)=60.0,dmesh(4)=60.0,dmesh(5)=120,time_window_max=1.5,
+   dmesh(1)=120.0,dmesh(2)=60.0,dmesh(3)=60.0,dmesh(4)=60.0,dmesh(5)=120,time_window_max=""" + window + """,
    dfile(01)='prepbufr',  dtype(01)='ps',        dplat(01)=' ',       dsis(01)='ps',                 dval(01)=1.0, dthin(01)=0, dsfcalc(01)=0,
    dfile(02)='prepbufr'   dtype(02)='t',         dplat(02)=' ',       dsis(02)='t',                  dval(02)=1.0, dthin(02)=0, dsfcalc(02)=0,
    dfile(03)='prepbufr',  dtype(03)='q',         dplat(03)=' ',       dsis(03)='q',                  dval(03)=1.0, dthin(03)=0, dsfcalc(03)=0,
@@ -1053,7 +1056,7 @@ cat << EOF > gsiparm.anl
    dfile(23)='gsndrbufr', dtype(23)='sndr',      dplat(23)='g12',     dsis(23)='sndr_g12',           dval(23)=0.0, dthin(23)=1, dsfcalc(23)=0,
    dfile(24)='gimgrbufr', dtype(24)='goes_img',  dplat(24)='g11',     dsis(24)='imgr_g11',           dval(24)=0.0, dthin(24)=1, dsfcalc(24)=0,
    dfile(25)='gimgrbufr', dtype(25)='goes_img',  dplat(25)='g12',     dsis(25)='imgr_g12',           dval(25)=0.0, dthin(25)=1, dsfcalc(25)=0,
-   dfile(26)='airsbufr',  dtype(26)='airs',      dplat(26)='aqua',    dsis(26)='airs281SUBSET_aqua', dval(26)=20.0,dthin(26)=2, dsfcalc(26)=1,
+   dfile(26)='airsbufr',  dtype(26)='airs',      dplat(26)='aqua',    dsis(26)='airs281SUBSET_aqua', dval(26)=20.0,dthin(26)=2, dsfcalc(26)=2,
    dfile(27)='msubufr',   dtype(27)='msu',       dplat(27)='n14',     dsis(27)='msu_n14',            dval(27)=2.0, dthin(27)=2, dsfcalc(27)=1,
    dfile(28)='amsuabufr', dtype(28)='amsua',     dplat(28)='n15',     dsis(28)='amsua_n15',          dval(28)=10.0,dthin(28)=2, dsfcalc(28)=1,
    dfile(29)='amsuabufr', dtype(29)='amsua',     dplat(29)='n16',     dsis(29)='amsua_n16',          dval(29)=0.0, dthin(29)=2, dsfcalc(29)=1,
@@ -1202,10 +1205,10 @@ esac
           amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 \
           ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16"
    for type in $listall; do
-      count=0
-      if [[ -f pe0000.${type}_${loop} ]]; then
+      #count=0
+      #if [[ -f pe0000.${type}_${loop} ]]; then
          count=`ls pe*${type}_${loop}* | wc -l`
-      fi
+      #fi
       if [[ $count -gt 0 ]]; then
          cat pe*${type}_${loop}* > diag_${type}_${string}.${ANAL_TIME}
       fi
