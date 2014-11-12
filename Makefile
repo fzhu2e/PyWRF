@@ -27,217 +27,47 @@ gsi:
 	./pywrf.py gsi -t gsi -o run_OSSE
 
 osse:
-	# WPS
-	#./pywrf.py wps -t make_new_run -o run_OSSE
-	#./pywrf.py wps -t make_namelist -s 2012102518 -e 2012102818 -i 10800 -o run_OSSE
-	#./pywrf.py wps -t geogrid -o run_OSSE
-	#./pywrf.py wps -t ungrib -o run_OSSE
-	#./pywrf.py wps -t metgrid -o run_OSSE
-	## real
-	#./pywrf.py wrf -t make_new_run -o run_OSSE
-	#./pywrf.py wrf -t make_namelist -s 2012102600 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	#./pywrf.py wrf -t make_real_srun -o run_OSSE
-	#./pywrf.py wrf -t real -o run_OSSE
-	#./pywrf.py wrf -t make_namelist -s 2012102603 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	#./pywrf.py wrf -t make_real_srun -o run_OSSE
-	#./pywrf.py wrf -t real -o run_OSSE
-	#./pywrf.py wrf -t make_namelist -s 2012102606 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	#./pywrf.py wrf -t make_real_srun -o run_OSSE
-	#./pywrf.py wrf -t real -o run_OSSE
-	#./pywrf.py wrf -t make_namelist -s 2012102609 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	#./pywrf.py wrf -t make_real_srun -o run_OSSE
-	#./pywrf.py wrf -t real -o run_OSSE
-	#./pywrf.py wrf -t make_namelist -s 2012102612 -r 54 -i 10800 -o run_OSSE --inputout_interval 180
-	#./pywrf.py wrf -t make_real_srun -o run_OSSE
-	#./pywrf.py wrf -t real -o run_OSSE
-	#./pywrf.py wrf -t make_namelist -s 2012102518 -r 6 -i 21600 -o run_OSSE
-	#./pywrf.py wrf -t make_real_srun -o run_OSSE
-	#./pywrf.py wrf -t real -o run_OSSE
-	## wrf 2012102518 -> 2012102600
-	#./pywrf.py wrf -t make_namelist -s 2012102518 -r 6 -i 10800 -o run_OSSE \
-				   #--history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	#./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	#./pywrf.py wrf -t wrf -o run_OSSE
-	# gsi
-	./pywrf.py gsi -t make_new_run -o run_OSSE
-	./pywrf.py gsi -t make_script -a 2012102600 -o run_OSSE
-	./pywrf.py gsi -t gsi -o run_OSSE
-	# da_update_bc
-	./pywrf.py wrfda -t make_new_run -o run_OSSE
-	./pywrf.py wrfda -t make_parame -o run_OSSE
-	./pywrf.py wrfda -t da_update_bc -a 2012102600 -o run_OSSE
-	# wrf 2012102600 -> 2012102603
-	./pywrf.py wrf -t make_namelist -s 2012102600 -r 3 -i 10800 -o run_OSSE \
-				   --history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	./pywrf.py wrf -t wrf -o run_OSSE
-	# gsi
-	./pywrf.py gsi -t make_new_run -o run_OSSE
-	./pywrf.py gsi -t make_script -a 2012102603 -o run_OSSE
-	./pywrf.py gsi -t gsi -o run_OSSE
-	# da_update_bc
-	./pywrf.py wrfda -t make_new_run -o run_OSSE
-	./pywrf.py wrfda -t make_parame -o run_OSSE
-	./pywrf.py wrfda -t da_update_bc -a 2012102603 -o run_OSSE
-	# wrf 2012102603 -> 2012102606
-	./pywrf.py wrf -t make_namelist -s 2012102603 -r 3 -i 10800 -o run_OSSE \
-				   --history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	./pywrf.py wrf -t wrf -o run_OSSE
-	# gsi
-	./pywrf.py gsi -t make_new_run -o run_OSSE
-	./pywrf.py gsi -t make_script -a 2012102606 -o run_OSSE
-	./pywrf.py gsi -t gsi -o run_OSSE
-	# da_update_bc
-	./pywrf.py wrfda -t make_new_run -o run_OSSE
-	./pywrf.py wrfda -t make_parame -o run_OSSE
-	./pywrf.py wrfda -t da_update_bc -a 2012102606 -o run_OSSE
-	# wrf 2012102606 -> 2012102609
-	./pywrf.py wrf -t make_namelist -s 2012102606 -r 3 -i 10800 -o run_OSSE \
-				   --history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	./pywrf.py wrf -t wrf -o run_OSSE
-	# gsi
-	./pywrf.py gsi -t make_new_run -o run_OSSE
-	./pywrf.py gsi -t make_script -a 2012102609 -o run_OSSE
-	./pywrf.py gsi -t gsi -o run_OSSE
-	# da_update_bc
-	./pywrf.py wrfda -t make_new_run -o run_OSSE
-	./pywrf.py wrfda -t make_parame -o run_OSSE
-	./pywrf.py wrfda -t da_update_bc -a 2012102609 -o run_OSSE
-	# wrf 2012102609 -> 2012102612
-	./pywrf.py wrf -t make_namelist -s 2012102609 -r 3 -i 10800 -o run_OSSE \
-				   --history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	./pywrf.py wrf -t wrf -o run_OSSE
-	# gsi
-	./pywrf.py gsi -t make_new_run -o run_OSSE
-	./pywrf.py gsi -t make_script -a 2012102612 -o run_OSSE
-	./pywrf.py gsi -t gsi -o run_OSSE
-	# da_update_bc
-	./pywrf.py wrfda -t make_new_run -o run_OSSE
-	./pywrf.py wrfda -t make_parame -o run_OSSE
-	./pywrf.py wrfda -t da_update_bc -a 2012102612 -o run_OSSE
-	# wrf 2012102612 -> 2012102818
-	./pywrf.py wrf -t make_namelist -s 2012102612 -r 54 -i 10800 -o run_OSSE \
-				   --history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	./pywrf.py wrf -t wrf -o run_OSSE
+	./bash/run_osse.sh
 
-#osse-l:
-	## WPS
-	##./pywrf.py wps -t make_new_run -o run_OSSE
-	##./pywrf.py wps -t make_namelist -s 2012102518 -e 2012102818 -i 10800 -o run_OSSE
-	##./pywrf.py wps -t geogrid -o run_OSSE
-	##./pywrf.py wps -t ungrib -o run_OSSE
-	##./pywrf.py wps -t metgrid -o run_OSSE
-	## real
-	##./pywrf.py wrf -t make_new_run -o run_OSSE
-	##./pywrf.py wrf -t make_namelist -s 2012102600 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	##./pywrf.py wrf -t make_real_srun -o run_OSSE
-	##./pywrf.py wrf -t real -o run_OSSE
-	##./pywrf.py wrf -t make_namelist -s 2012102603 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	##./pywrf.py wrf -t make_real_srun -o run_OSSE
-	##./pywrf.py wrf -t real -o run_OSSE
-	##./pywrf.py wrf -t make_namelist -s 2012102606 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	##./pywrf.py wrf -t make_real_srun -o run_OSSE
-	##./pywrf.py wrf -t real -o run_OSSE
-	##./pywrf.py wrf -t make_namelist -s 2012102609 -r 3 -i 10800 -o run_OSSE --inputout_interval 180
-	##./pywrf.py wrf -t make_real_srun -o run_OSSE
-	##./pywrf.py wrf -t real -o run_OSSE
-	##./pywrf.py wrf -t make_namelist -s 2012102612 -r 54 -i 10800 -o run_OSSE --inputout_interval 180
-	##./pywrf.py wrf -t make_real_srun -o run_OSSE
-	##./pywrf.py wrf -t real -o run_OSSE
-	##./pywrf.py wrf -t make_namelist -s 2012102518 -r 6 -i 21600 -o run_OSSE
-	##./pywrf.py wrf -t make_real_srun -o run_OSSE
-	##./pywrf.py wrf -t real -o run_OSSE
-	## wrf 2012102518 -> 2012102600
-	##./pywrf.py wrf -t make_namelist -s 2012102518 -r 6 -i 10800 -o run_OSSE \
-				   ##--history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	##./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	##./pywrf.py wrf -t wrf -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE -l
-	#./pywrf.py wrfda -t da_update_bc -a 2012102600 -o run_OSSE -l
-	## gsi
-	#./pywrf.py gsi -t make_new_run -o run_OSSE
-	#./pywrf.py gsi -t make_script -a 2012102600 -o run_OSSE
-	#./pywrf.py gsi -t gsi -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE
-	#./pywrf.py wrfda -t da_update_bc -a 2012102600 -o run_OSSE
-	## wrf 2012102600 -> 2012102603
-	#./pywrf.py wrf -t make_namelist -s 2012102600 -r 3 -i 10800 -o run_OSSE \
-				   #--history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	#./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	#./pywrf.py wrf -t wrf -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE -l
-	#./pywrf.py wrfda -t da_update_bc -a 2012102603 -o run_OSSE -l
-	## gsi
-	#./pywrf.py gsi -t make_new_run -o run_OSSE
-	#./pywrf.py gsi -t make_script -a 2012102603 -o run_OSSE
-	#./pywrf.py gsi -t gsi -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE
-	#./pywrf.py wrfda -t da_update_bc -a 2012102603 -o run_OSSE
-	## wrf 2012102603 -> 2012102606
-	#./pywrf.py wrf -t make_namelist -s 2012102603 -r 3 -i 10800 -o run_OSSE \
-				   #--history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	#./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	#./pywrf.py wrf -t wrf -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE -l
-	#./pywrf.py wrfda -t da_update_bc -a 2012102606 -o run_OSSE -l
-	## gsi
-	#./pywrf.py gsi -t make_new_run -o run_OSSE
-	#./pywrf.py gsi -t make_script -a 2012102606 -o run_OSSE
-	#./pywrf.py gsi -t gsi -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE
-	#./pywrf.py wrfda -t da_update_bc -a 2012102606 -o run_OSSE
-	## wrf 2012102606 -> 2012102609
-	#./pywrf.py wrf -t make_namelist -s 2012102606 -r 3 -i 10800 -o run_OSSE \
-				   #--history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	#./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	#./pywrf.py wrf -t wrf -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE -l
-	#./pywrf.py wrfda -t da_update_bc -a 2012102609 -o run_OSSE -l
-	## gsi
-	#./pywrf.py gsi -t make_new_run -o run_OSSE
-	#./pywrf.py gsi -t make_script -a 2012102609 -o run_OSSE
-	#./pywrf.py gsi -t gsi -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE
-	#./pywrf.py wrfda -t da_update_bc -a 2012102609 -o run_OSSE
-	## wrf 2012102609 -> 2012102612
-	#./pywrf.py wrf -t make_namelist -s 2012102609 -r 3 -i 10800 -o run_OSSE \
-				   #--history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	#./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	#./pywrf.py wrf -t wrf -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE -l
-	#./pywrf.py wrfda -t da_update_bc -a 2012102612 -o run_OSSE -l
-	## gsi
-	#./pywrf.py gsi -t make_new_run -o run_OSSE
-	#./pywrf.py gsi -t make_script -a 2012102612 -o run_OSSE
-	#./pywrf.py gsi -t gsi -o run_OSSE
-	## da_update_bc
-	#./pywrf.py wrfda -t make_new_run -o run_OSSE
-	#./pywrf.py wrfda -t make_parame -o run_OSSE
-	#./pywrf.py wrfda -t da_update_bc -a 2012102612 -o run_OSSE
-	## wrf 2012102612 -> 2012102818
-	#./pywrf.py wrf -t make_namelist -s 2012102612 -r 54 -i 10800 -o run_OSSE \
-				   #--history_interval 180 --inputout_interval 180 --inputout_begin_h 3
-	#./pywrf.py wrf -t make_wrf_srun -o run_OSSE
-	#./pywrf.py wrf -t wrf -o run_OSSE
+osse-l:
+	./bash/run_osse_update_lbc.sh
+
+osse_hourly:
+	./bash/run_osse_hourly.sh
+
+# EC nature run
+osse_ec_3h:
+	./bash/run_osse_ec_3h.sh
+
+osse_ec_3h_ctl:
+	./bash/run_osse_ec_3h_ctl.sh
+
+osse_ec_3h_raob:
+	./bash/run_osse_ec_3h_raob.sh
+
+# To find out why GEO is worse than LEO
+debug_01:
+	./bash/run_debug_01.sh
+
+debug_02:
+	./bash/run_debug_02.sh
+
+# Renews
+renew:
+	./bash/renew.sh
+
+renew_hourly:
+	./bash/renew_hourly.sh
+
+renew_debug_01:
+	./bash/renew_debug_01.sh
+
+renew_debug_02:
+	./bash/renew_debug_02.sh
+
+renew_ec_3h:
+	./bash/renew_satbias.sh
+	./bash/renew_ec_3h.sh
+
+renew_ec_3h_raob:
+	./bash/renew_ec_3h_raob.sh

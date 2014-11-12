@@ -27,6 +27,7 @@ def run(args):
 
     elif args.task == 'make_script':
         make_script()
+        #make_script_3()
 
     elif args.task == 'gsi':
         run_gsi()
@@ -34,7 +35,7 @@ def run(args):
 def make_new_run():
     subprocess.call('cp -r ../run/* .', shell=True)
 
-#def make_script_3.0():
+#def make_script_3():
     #yyyy = str(env_vars.ANA_TIME.year).zfill(4)
     #mm = str(env_vars.ANA_TIME.month).zfill(2)
     #dd = str(env_vars.ANA_TIME.day).zfill(2)
@@ -131,7 +132,8 @@ def make_new_run():
   #AMSUABUFR=${OBS_ROOT}/amsua/gdas.1bamua.t""" + hh + """z.""" + date + """.bufr_block
   ##AIRSBUFR=${OBS_ROOT}/airs/gdas.airsev.t""" + hh + """z.""" + date + """.bufr_block
   ##AIRSBUFR=${OBS_ROOT}/AIRS_LEO/""" + ana_time + """0000_geo_airs_bufr_clr
-  #AIRSBUFR=${OBS_ROOT}/AIRS_GEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  ##AIRSBUFR=${OBS_ROOT}/AIRS_GEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/Hourly/WRFNR/GEO/""" + ana_time + """0000_geo_airs_bufr_clr
 
 ## Static data
   #CRTM_ROOT=""" + env_vars.CRTM_PATH + """
@@ -720,7 +722,7 @@ def make_script():
 #SBATCH --export=NONE
 #SBATCH --ntasks=""" + str(env_vars.GSI_PROC) + """
 #SBATCH --mem-per-cpu=6000
-#SBATCH --time=00:30:00
+#SBATCH --time=01:30:00
 #SBATCH --output=/scratch/""" + user_name + """/tmp/gsi_arw-control.%j
 
 source /etc/bashrc
@@ -755,12 +757,34 @@ module load netcdf4/4.1.3
 
   OBS_ROOT=""" + env_vars.OBS_ROOT + """
   BK_FILE=""" + bk_file + """
-  PREPBUFR=${OBS_ROOT}/prepbufr/prepbufr.gdas.""" + date + """.t""" + hh + """z.nr_block2
+
+  # WRF_NR
+  #PREPBUFR=${OBS_ROOT}/prepbufr/prepbufr.gdas.""" + date + """.t""" + hh + """z.nr_block2
   #AMSUABUFR=${OBS_ROOT}/amsua/gdas.1bamua.t""" + hh + """z.""" + date + """.bufr_block
   #AIRSBUFR=${OBS_ROOT}/airs/gdas.airsev.t""" + hh + """z.""" + date + """.bufr_block
-  AIRSBUFR=${OBS_ROOT}/AIRS_LEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/AIRS_LEO/""" + ana_time + """0000_geo_airs_bufr_clr
   #AIRSBUFR=${OBS_ROOT}/AIRS_GEO/""" + ana_time + """0000_geo_airs_bufr_clr
   #AIRSBUFR=${OBS_ROOT}/Hourly/WRFNR/GEO/""" + ana_time + """0000_geo_airs_bufr_clr
+
+  # EC_NR
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/RAOB_prepbufr_doublenoise/""" + date + hh + """_prepbufr_doublenoise
+  #AIRSBUFR=${OBS_ROOT}/Hourly/ECNR/GEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/Hourly/ECNR/LEO/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/Hourly/ECNR/LEO_Ocean/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/Hourly/ECNR/GEO_Ocean/""" + ana_time + """0000_geo_airs_bufr_clr
+  #AIRSBUFR=${OBS_ROOT}/Hourly/ECNR/GEO_New/""" + ana_time + """0000_geo_airs_bufr_clr
+
+  # EC_NR with retrieval
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/LEO/3hourly/""" + date + hh + """_prepbufr_retrieval
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/GEO/hourly/""" + date + hh + """_prepbufr_retrieval
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/LEO/3hourly_ocean/""" + date + hh + """_prepbufr_retrieval
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/GEO/hourly_ocean/""" + date + hh + """_prepbufr_retrieval
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/LEO/3hourly_obs/""" + date + hh + """_prepbufr_obs
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/GEO/hourly_obs/""" + date + hh + """_prepbufr_obs
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/LEO/3hourly_clr/""" + date + hh + """_prepbufr_retrieval_clr
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/GEO/hourly_clr/""" + date + hh + """_prepbufr_retrieval_clr
+  PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/LEO/3hourly_err1/""" + date + hh + """_prepbufr_retrieval
+  #PREPBUFR=${OBS_ROOT}/Hourly/ECNR/Retrieval/GEO/hourly_err1/""" + date + hh + """_prepbufr_retrieval
 
 # Static data
   CRTM_ROOT=""" + env_vars.CRTM_PATH + """
@@ -774,8 +798,8 @@ module load netcdf4/4.1.3
 # if_clean = clean  : delete temperal files in working directory (default)
 #            no     : leave running directory as is (this is for debug only)
   bk_core=ARW
-  #bkcv_option=NAM
-  bkcv_option=GLOBAL
+  bkcv_option=NAM
+  #bkcv_option=GLOBAL
   if_clean=clean
 #
 #
@@ -784,7 +808,7 @@ module load netcdf4/4.1.3
 ##################################################################################
 # Check GSI needed environment variables are defined and exist
 #
- 
+
 # Make sure ANAL_TIME is defined and in the correct format
 if [ ! "${ANAL_TIME}" ]; then
   echo "ERROR: \$ANAL_TIME is not defined!"
@@ -823,7 +847,7 @@ if [ ! -d "${FIX_ROOT}" ]; then
   exit 1
 fi
 
-# Set the path to the CRTM coefficients 
+# Set the path to the CRTM coefficients
 if [ ! "${CRTM_ROOT}" ]; then
   echo "ERROR: \$CRTM_ROOT is not defined!"
   exit 1
@@ -877,7 +901,7 @@ ln -s ${PREPBUFR} ./prepbufr
 # ln -s ${OBS_ROOT}/gdas1.t12z.gpsro.tm00.bufr_d gpsrobufr
 #
 # Feng
-ln -s ${AIRSBUFR} ./airsbufr
+#ln -s ${AIRSBUFR} ./airsbufr
 ##################################################################################
 
 echo " Copy fixed files and link CRTM coefficient files to working directory"
@@ -922,7 +946,6 @@ SATANGL=${FIX_ROOT}/global_satangbias.txt
 SATINFO=${FIX_ROOT}/global_satinfo.txt
 #SATINFO=${FIX_ROOT}/global_satinfo_nobias.txt
 CONVINFO=${FIX_ROOT}/global_convinfo.txt
-#CONVINFO=${FIX_ROOT}/nam_regional_convinfo.tx
 OZINFO=${FIX_ROOT}/global_ozinfo.txt
 PCPINFO=${FIX_ROOT}/global_pcpinfo.txt
 
@@ -972,7 +995,9 @@ done
  cp $bufrtable ./prepobs_prep.bufrtable
 
 # for satellite bias correction
-cp ${FIX_ROOT}/sample.satbias ./satbias_in
+#cp ${FIX_ROOT}/sample.satbias ./satbias_in
+cp ${FIX_ROOT}/satbias_cyc ./satbias_in
+#cp ${FIX_ROOT}/ndas.t06z.satbias.tm03 ./satbias_in
 
 #
 ##################################################################################
@@ -1160,6 +1185,8 @@ fi
 ##################################################################
 #
 #   GSI updating satbias_in
+# Bias correction by Feng
+cp ./satbias_out ${FIX_ROOT}/satbias_cyc
 #
 # GSI updating satbias_in (only for cycling assimilation)
 
