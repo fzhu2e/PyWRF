@@ -7,6 +7,7 @@ import time
 import env_vars
 import tools
 
+
 def run(args):
     print('Start running WRF...')
     print('Task:', args.task)
@@ -27,10 +28,6 @@ def run(args):
     elif args.task == 'make_namelist':
         make_namelist()
 
-    #elif args.task == 'make_jobs':
-        #make_real_job()
-        #make_wrf_job()
-
     elif args.task == 'make_real_srun':
         make_real_srun()
 
@@ -43,10 +40,12 @@ def run(args):
     elif args.task == 'wrf':
         run_wrf()
 
+
 def make_new_run():
     subprocess.call('cp ../run/* .', shell=True)
-    subprocess.call('ln -sf ' + env_vars.WRF_ROOT+ '/main/*.exe .', shell=True)
+    subprocess.call('ln -sf ' + env_vars.WRF_ROOT + '/main/*.exe .', shell=True)
     subprocess.call('rm -f namelist.input', shell=True)
+
 
 def make_namelist():
     yyyy_s = str(env_vars.START_TIME.year).zfill(4)
@@ -79,9 +78,14 @@ def make_namelist():
     inputout_end_h = str(env_vars.INPUTOUT_END_H)
 
     p_top_requested = str(env_vars.P_TOP_REQUESTED)
+    eta_levels = re.sub(r'\[|\]', '', str(env_vars.ETA_LEVELS))
+    # print(eta_levels)
+
+    # zap_close_levels                    = 1,
+    # eta_levels                          = """ + eta_levels + """
 
     namelist = open('namelist.input', 'w')
-    #=================== configuration-s ===================
+    # =================== configuration-s ===================
     namelist.write("""&time_control
  run_days                            = """ + run_days + """,
  run_hours                           = """ + run_hours + """,
@@ -137,36 +141,20 @@ def make_namelist():
  parent_grid_ratio                   = 1,     3,     3,
  parent_time_step_ratio              = 1,     3,     3,
  feedback                            = 1,
- smooth_option                       = 0
- zap_close_levels                    = 1,
- p_top_requested                     = 1000,
- eta_levels                          = 1.0000,0.9508334,0.8582535,0.7765451,0.7044966,0.6410096,
-                                       0.5850902,0.5358422,0.4924589,0.4542161,0.4204658,
-                                       0.3906297,0.3641936,0.3407014,0.3197505,0.3009862,
-                                       0.2840981,0.2688150,0.2549014,0.2421538,0.2303973,
-                                       0.2194822,0.2092815,0.1996879,0.1906118,0.1819786,
-                                       0.1737269,0.1658067,0.1581776,0.1508076,0.1436715,
-                                       0.1367499,0.1300280,0.1234950,0.1171429,0.1109663,
-                                       0.1049615,0.0991261,0.0934586,0.0879584,0.0826250,
-                                       0.0774583,0.0724583,0.0676250,0.0629583,0.0584584,
-                                       0.0541250,0.0499583,0.0459583,0.0421250,0.0384583,
-                                       0.0349583,0.0316250,0.0284583,0.0254583,0.0226250,
-                                       0.0199583,0.0174583,0.0151250,0.0129583,0.0109583,
-                                       0.0091250,0.0074583,0.0059583,0.0046250,0.0034583,
-                                       0.0024583,0.0016250,0.0009583,0.0004583,0.0001250,0.00000
+ smooth_option                       = 0,
  /
 
  &physics
  mp_physics                          = 6,     3,     3,
  ra_lw_physics                       = 4,     1,     1,
  ra_sw_physics                       = 4,     1,     1,
- radt                                = 16,    30,    30,
+ radt                                = 30,    30,    30,
  sf_sfclay_physics                   = 1,     1,     1,
  sf_surface_physics                  = 2,     2,     2,
  bl_pbl_physics                      = 1,     1,     1,
  bldt                                = 0,     0,     0,
  cu_physics                          = 1,     1,     0,
- cudt                                = 0,     5,     5,
+ cudt                                = 5,     5,     5,
  isfflx                              = 1,
  ifsnow                              = 0,
  icloud                              = 1,
@@ -198,6 +186,7 @@ def make_namelist():
  non_hydrostatic                     = .true., .true., .true.,
  moist_adv_opt                       = 1,      1,      1,
  scalar_adv_opt                      = 1,      1,      1,
+ use_baseparam_fr_nml                = .true.
  /
 
  &bdy_control
@@ -215,132 +204,9 @@ def make_namelist():
  nio_tasks_per_group = 0,
  nio_groups = 1,
  /""")
-    #=================== configuration-e ===================
+    # =================== configuration-e ===================
     namelist.close()
 
-#def make_real_job():
-
-    #yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
-    #mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
-    #dd = tools.pick_value('namelist.input', 'start_day').zfill(2)
-    #hh = tools.pick_value('namelist.input', 'start_hour').zfill(2)
-
-    #datehour = yyyy + mm + dd + hh
-
-    #result_dir = os.path.join(env_vars.RESULTS_REAL, datehour)
-
-    #if not os.path.exists(result_dir):
-        #os.mkdir(result_dir)
-
-    #job = open('real.job', 'w')
-    ##=================== configuration-s ===================
-    #job.write("""#!/usr/bin/env bash
-
-## Set job name
-##$ -N real_arw
-
-## Merge stdout stderr
-##$ -j y
-
-## Set the number of processors
-##$ -pe mpi2_mpd 48
-
-## Set output directory
-##$ -o $HOME/output
-
-## Source /etc/csh.cshrc for basic environment and modules
-#source /etc/bashrc
-## Set up input, output and executable variables
-## These often differ per job
-#INPUT=""" + env_vars.WORK_ROOT + """
-#RESULTS=""" + result_dir + """
-#EXECUTABLE=./real.exe
-
-## Set up for MPI
-#export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
-
-## Load modules
-#module load bundle/basic-1
-#module load jobvars
-
-#WORK_DIR=/scratch4/fzhu/real/
-## Do our work in our scheduler-assigned temporary directory
-#cd $WORK_DIR
-## Copy your input to your $TMPDIR
-#rsync -a $INPUT/* $WORK_DIR
-##mpiexec
-#mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
-## Copy your results to a directory in /data/$USER
-#rsync -a ./wrfinput* $RESULTS
-#rsync -a ./wrfbdy* $RESULTS
-
-#rm -rf ./*
-
-#exit 0""")
-    ##=================== configuration-e ===================
-    #job.close()
-
-#def make_wrf_job():
-
-    #yyyy = tools.pick_value('namelist.input', 'start_year').zfill(4)
-    #mm = tools.pick_value('namelist.input', 'start_month').zfill(2)
-    #dd = tools.pick_value('namelist.input', 'start_day').zfill(2)
-    #hh = tools.pick_value('namelist.input', 'start_hour').zfill(2)
-
-    #datehour = yyyy + mm + dd + hh
-
-    #result_dir = os.path.join(env_vars.RESULTS_WRF, datehour)
-
-    #if not os.path.exists(result_dir):
-        #os.mkdir(result_dir)
-
-    #job = open('wrf.job', 'w')
-    ##=================== configuration-s ===================
-    #job.write("""#!/usr/bin/env bash
-
-## Set job name
-##$ -N wrf_arw
-
-## Merge stdout stderr
-##$ -j y
-
-## Set the number of processors
-##$ -pe mpi2_mpd 192
-
-## Set output directory
-##$ -o $HOME/output
-
-## Source /etc/csh.cshrc for basic environment and modules
-#source /etc/bashrc
-## Set up input, output and executable variables
-## These often differ per job
-#INPUT=""" + env_vars.WORK_ROOT + """
-#RESULTS=""" + result_dir + """
-#EXECUTABLE=./wrf.exe
-
-## Set up for MPI
-#export MPD_CON_EXT="sge_$JOB_ID.$SGE_TASK_ID"
-
-## Load modules
-#module load bundle/basic-1
-#module load jobvars
-
-#WORK_DIR=/scratch4/fzhu/wrf
-## Do our work in our scheduler-assigned temporary directory
-#cd $WORK_DIR
-## Copy your input to your $TMPDIR
-#rsync -a $INPUT/* $WORK_DIR
-##mpiexec
-#mpiexec -machinefile $TMPDIR/machines -n $NSLOTS $EXECUTABLE
-## Copy your results to a directory in /data/$USER
-#rsync -a ./wrfout* $RESULTS
-#rsync -a ./wrfvar* $RESULTS
-
-#rm -rf ./*
-
-#exit 0""")
-    ##=================== configuration-e ===================
-    #job.close()
 
 def make_real_srun():
 
@@ -359,12 +225,12 @@ def make_real_srun():
     user_name = os.environ['USER']
 
     srun = open('real.srun', 'w')
-    #=================== configuration-s ===================
+    # =================== configuration-s ===================
     srun.write("""#!/usr/bin/env bash
 #SBATCH --job-name=real_arw
 
 #SBATCH --partition=s4
-#SBATCH --export=NONE
+#SBATCH --export=ALL
 #SBATCH --ntasks=""" + str(env_vars.REAL_PROC) + """
 #SBATCH --mem-per-cpu=6000
 #SBATCH --time=00:30:00
@@ -387,18 +253,22 @@ WORK_DIR=/scratch/$USER/real
 
 cd $WORK_DIR
 rm -rf ./*
-rsync -a $INPUT/* $WORK_DIR
+#rsync -a $INPUT/* $WORK_DIR
+cp $INPUT/* $WORK_DIR
 
 srun --cpu_bind=core --distribution=block:block $EXECUTABLE
 
-rsync -a ./wrfbdy* $RESULTS
-rsync -a ./wrfinput* $RESULTS
+#rsync -a ./wrfbdy* $RESULTS
+#rsync -a ./wrfinput* $RESULTS
+cp ./wrfbdy* $RESULTS
+cp ./wrfinput* $RESULTS
 
-#rm -rf ./*
+# rm -rf ./*
 
 exit 0""")
-    #=================== configuration-e ===================
+    # =================== configuration-e ===================
     srun.close()
+
 
 def make_wrf_srun():
 
@@ -417,12 +287,12 @@ def make_wrf_srun():
     user_name = os.environ['USER']
 
     srun = open('wrf.srun', 'w')
-    #=================== configuration-s ===================
+    # =================== configuration-s ===================
     srun.write("""#!/usr/bin/env bash
 #SBATCH --job-name=wrf_arw
 
 #SBATCH --partition=s4
-#SBATCH --export=NONE
+#SBATCH --export=ALL
 #SBATCH --ntasks=""" + str(env_vars.WRF_PROC) + """
 #SBATCH --mem-per-cpu=6000
 #SBATCH --time=02:00:00
@@ -445,18 +315,22 @@ WORK_DIR=/scratch/$USER/wrf/
 
 cd $WORK_DIR
 rm -rf ./*
-rsync -a $INPUT/* $WORK_DIR
+#rsync -a $INPUT/* $WORK_DIR
+cp $INPUT/* $WORK_DIR
 
 srun --cpu_bind=core --distribution=block:block $EXECUTABLE
 
-rsync -a ./wrfvar* $RESULTS
-rsync -a ./wrfout* $RESULTS
+# rsync -a ./wrfvar* $RESULTS
+# rsync -a ./wrfout* $RESULTS
+cp ./wrfvar* $RESULTS
+cp ./wrfout* $RESULTS
 
 #rm -rf ./*
 
 exit 0""")
-    #=================== configuration-e ===================
+    # =================== configuration-e ===================
     srun.close()
+
 
 def run_real():
 
@@ -471,11 +345,10 @@ def run_real():
 
     subprocess.call('ln -sf ' + env_vars.RESULTS_WPS + '/met_em* .', shell=True)
 
-    if env_vars.MPI_WRF == False:
+    if not env_vars.MPI_WRF:
         subprocess.call('./real.exe', shell=True)
 
     else:
-        #subprocess.call('qsub -sync y real.job', shell=True)
         subprocess.call('sbatch real.srun', shell=True)
 
     while not tools.real_done(result_dir):
@@ -485,6 +358,7 @@ def run_real():
     print('real.exe is DONE!!!')
     subprocess.call('cp ' + os.path.join(result_dir, 'wrf* .'), shell=True)
     subprocess.call('cp namelist.input ' + result_dir, shell=True)
+
 
 def run_wrf():
 
@@ -504,11 +378,10 @@ def run_wrf():
 
     result_dir = os.path.join(env_vars.RESULTS_WRF, datehour)
 
-    if env_vars.MPI_WRF == False:
+    if not env_vars.MPI_WRF:
         subprocess.call('./wrf.exe', shell=True)
 
     else:
-        #subprocess.call('qsub -sync y wrf.job', shell=True)
         subprocess.call('sbatch wrf.srun', shell=True)
 
     print(end_time)

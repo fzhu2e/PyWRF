@@ -40,16 +40,15 @@ def init(args):
     env_vars.CRTM_PATH = '/data/users/fzhu/Data/ForGSI/CRTM_REL-2.1.3'
 
     env_vars.OBS_ROOT = '/data/users/fzhu/Data/ForOSSE'
+    # env_vars.OBS_ROOT = '/data/users/fzhu/Data/ForTCR/Sandy_Real_Prepbufr'
 
     # model root
     tools_path = '/data/users/fzhu/Tools'
     env_vars.WPS_ROOT = os.path.join(tools_path, 'WRF-3.6.1/WPS')
     env_vars.WRF_ROOT = os.path.join(tools_path, 'WRF-3.6.1/WRFV3')
     env_vars.WRFDA_ROOT = os.path.join(tools_path, 'WRF-3.6.1/WRFDA')
-    env_vars.GSI_ROOT = os.path.join(tools_path, 'comGSI_v3.3')
-    #env_vars.GSI_ROOT = os.path.join(tools_path, 'comGSI_v3.3_fix')
-    #env_vars.GSI_ROOT = os.path.join(tools_path, 'comGSI_v3')
-    #env_vars.GSI_ROOT = os.path.join(tools_path, 'comGSI_v3.3_large_nmsgmax')
+    # env_vars.GSI_ROOT = os.path.join(tools_path, 'comGSI_v3.3')
+    env_vars.GSI_ROOT = os.path.join(tools_path, 'comGSI_v3.3_large_nmsgmax')
 
     # model setting
     env_vars.MPI_WPS = False
@@ -57,7 +56,7 @@ def init(args):
     env_vars.MPI_WRFDA = False
     env_vars.MPI_GSI = True
 
-    env_vars.REAL_PROC = 100
+    env_vars.REAL_PROC = 40
     env_vars.WRF_PROC = 200
     env_vars.GSI_PROC = 100
 
@@ -66,13 +65,18 @@ def init(args):
     #====================
 
     # domain
+    # env_vars.TIME_STEP = 10
     env_vars.TIME_STEP = 50
     env_vars.MAX_DOM = 1
-    env_vars.E_WE = [500, 0, 0]
-    env_vars.E_SN = [240, 0, 0]
+    # env_vars.E_WE = [500, 0, 0]
+    # env_vars.E_SN = [240, 0, 0]
+    # env_vars.DX = [16000, 0, 0]
+    # env_vars.DY = [16000, 0, 0]
     env_vars.E_VERT = [72, 0, 0]
-    env_vars.DX = [16000, 0, 0]
-    env_vars.DY = [16000, 0, 0]
+    env_vars.E_WE = [250, 0, 0]
+    env_vars.E_SN = [120, 0, 0]
+    env_vars.DX = [32000, 0, 0]
+    env_vars.DY = [32000, 0, 0]
     env_vars.I_PARENT_START = [1, 0, 0]
     env_vars.J_PARENT_START = [1, 0, 0]
 
@@ -82,9 +86,24 @@ def init(args):
     env_vars.TRUELAT2 = 40
     env_vars.STAND_LON = -70
 
-    env_vars.P_TOP_REQUESTED = 5000
+    # env_vars.P_TOP_REQUESTED = 5000
+    env_vars.P_TOP_REQUESTED = 1000
 
-    #=================== configuration-e ===================
+    env_vars.ETA_LEVELS = [
+        1., 0.999875, 0.999542, 0.999042, 0.998375, 0.997542, 0.996542,
+        0.995375, 0.994042, 0.992542, 0.990875, 0.989042, 0.987042, 0.984875,
+        0.982542, 0.980042, 0.977375, 0.974542, 0.971542, 0.968375, 0.965042,
+        0.961542, 0.957875, 0.954042, 0.950042, 0.945875, 0.941542, 0.937042,
+        0.932375, 0.927542, 0.922542, 0.917375, 0.912042, 0.906541, 0.900874,
+        0.895039, 0.889034, 0.882857, 0.876505, 0.869972, 0.86325, 0.856329,
+        0.849192, 0.841822, 0.834193, 0.826273, 0.818021, 0.809388, 0.800312,
+        0.790719, 0.780518, 0.769603, 0.757846, 0.745099, 0.731185, 0.715902,
+        0.699014, 0.68025, 0.659299, 0.635806, 0.60937, 0.579534, 0.545784,
+        0.507541, 0.464158, 0.41491, 0.35899, 0.295503, 0.223455, 0.141747,
+        0.0491666, 0.
+    ]
+
+    # =================== configuration-e ===================
 
     # run_name
     if args.workdir is not None:
